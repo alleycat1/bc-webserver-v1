@@ -1,0 +1,35 @@
+
+
+=========== nvm install ==============
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+
+
+=========== node version =============
+v18.20.4
+
+
+=========== plv8 install =============
+$ sudo apt remove --purge  libnode-dev
+$ sudo apt install libcurl4-openssl-dev r-cran-littler
+$ r
+Sys.setenv(DOWNLOAD_STATIC_LIBV8=1)
+install.packages("V8")
+$ make distclean
+$ make 
+$ make install
+$ make installcheck
+
+===== Change schema.sql to new_schema.sql =====
+
+=========== postgresql ===============
+sudo -u postgres createuser -P bustabit
+sudo -u postgres createdb -O bustabit bustabitdb
+sudo -u postgres createlang plv8 bustabitdb
+psql -W -U bustabit -d bustabitdb -h localhost -f bustabit-webserver/server/sql/schema.sql
+
+
+=== Changing socket.io-client package ===
+Copy all files in the dist folder to the upper folder.
+
+=== Populate game hashes from game server ===
+node populate_hashes.js

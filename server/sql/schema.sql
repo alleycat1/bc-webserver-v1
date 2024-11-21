@@ -304,8 +304,12 @@ CREATE OR REPLACE FUNCTION plays_users_stats_trigger()
     if (TG_OP === 'UPDATE' && OLD.user_id !== NEW.user_id)
       throw new Error('Update of user_id not allowed');
 
-    var userId, gross = 0, net = 0, num = 0;
+    var userId;
     var bet, cashOut, bonus;
+		let gross = BigInt(0);
+		let net = BigInt(0);
+		let num = BigInt(0);
+		let cash_offset = BigInt(0);
 
     // Add new values.
     if (NEW) {
@@ -313,10 +317,15 @@ CREATE OR REPLACE FUNCTION plays_users_stats_trigger()
       bet     = NEW.bet;
       bonus   = NEW.bonus || 0;
       cashOut = NEW.cash_out || 0;
-
-      gross  += Math.max(cashOut - bet, 0) + bonus;
-      net    += (cashOut - bet) + bonus;
-      num    += 1;
+			
+	  cash_offset = BigInt(cashOut) - BigInt(bet);
+	
+	  if( cash_offset > 0)
+		gross += cash_offset + BigInt(bonus);
+	  else
+		gross  += BigInt(bonus);
+      net    += cash_offset + BigInt(bonus);
+      num    += BigInt(1);
     }
 
     // Subtract old values
@@ -326,9 +335,14 @@ CREATE OR REPLACE FUNCTION plays_users_stats_trigger()
       bonus   = OLD.bonus || 0;
       cashOut = OLD.cash_out || 0;
 
-      gross  -= Math.max(cashOut - bet, 0) + bonus;
-      net    -= (cashOut - bet) + bonus;
-      num    -= 1;
+	  cash_offset = BigInt(cashOut) - BigInt(bet);
+	
+	  if( cash_offset > 0)
+		net    += cash_offset + BigInt(bonus);
+	  else
+		gross  += BigInt(bonus);
+      net    += cash_offset + BigInt(bonus);;
+      num    -= BigInt(1);
     }
 
     var sql =

@@ -1,8 +1,8 @@
 #games-log-container {
     height: 100%;
-
     width: 100%;
     padding-top: 1rem;
+    border-radius: 10px;
 }
 
 #games-log-container .header-bg {
@@ -11,7 +11,6 @@
 
 #games-log-container .table-inner {
     height: 100%;
-
     width: 100%;
     overflow-y: scroll;
 }
@@ -48,6 +47,7 @@
 
 #games-log-container .games-log tr {
     width: 100%;
+    
     display: table;
     text-align: left;
 }
@@ -181,25 +181,9 @@
 }
 
 #games-log-container .hash-copy {
-    -webkit-border-radius: 0 4px 4px 0;
-    -moz-border-radius: 0 4px 4px 0;
-    border-radius: 0 4px 4px 0;
     margin-left: -1px;
-    vertical-align: top;
-    display: inline-block;
-    width: auto;
-    height: 20px;
-    min-width: 16px;
     padding: 0 5px;
     font-size: 11px;
-    font-weight: normal;
-    line-height: 20px;
-    text-align: center;
-    text-shadow: 0 1px 0 #ffffff;
-    background-color: #676363;
-    border: 1px solid #1F1E1E;
-    white-space: nowrap;
-    color: #FAF4F4;
 }
 
 @media handheld, only screen and (max-width: 767px) {

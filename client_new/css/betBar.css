@@ -5,6 +5,7 @@
     bottom: 0;
     height: .3em;
     background-color: white;
+    border-radius: 0 0 10px 10px;
 }
 
 .bet-bar-starting {

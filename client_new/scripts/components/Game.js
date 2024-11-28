@@ -18,7 +18,7 @@ define([
     'game-logic/GameEngineStore',
     'stores/GameSettingsStore',
     'stores/StrategyEditorStore'
-], function(
+], function (
     React,
     IdleTimer,
     AppConstants,
@@ -32,7 +32,7 @@ define([
     GameEngineStore,
     GameSettingsStore,
     StrategyEditorStore
-){
+) {
     var TopBar = React.createFactory(TopBarClass);
     var ChartControls = React.createFactory(ChartControlsClass);
     var TabsSelector = React.createFactory(TabsSelectorClass);
@@ -51,46 +51,46 @@ define([
             return state;
         },
 
-        componentDidMount: function() {
+        componentDidMount: function () {
             GameSettingsStore.addChangeListener(this._onSettingsChange);
             StrategyEditorStore.addChangeListener(this._onStrategyChange);
 
             window.addEventListener("resize", this._onWindowResize);
             this._idleTimer.register();
             this._idleTimer.on({
-              idle: this._onIdle,
-              unidle: this._onUnidle
+                idle: this._onIdle,
+                unidle: this._onUnidle
             });
 
             Hotkeys.mount();
         },
 
-        componentWillUnmount: function() {
+        componentWillUnmount: function () {
             GameSettingsStore.removeChangeListener(this._onSettingsChange);
             StrategyEditorStore.removeChangeListener(this._onStrategyChange);
 
             window.removeEventListener("resize", this._onWindowResize);
             this._idleTimer.unregister();
             this._idleTimer.off({
-              idle: this._onIdle,
-              unidle: this._onUnidle
+                idle: this._onIdle,
+                unidle: this._onUnidle
             });
 
             Hotkeys.unmount();
         },
 
-        _onSettingsChange: function() {
-            if(this.isMounted())
+        _onSettingsChange: function () {
+            if (this.isMounted())
                 this.setState(GameSettingsStore.getState());
         },
 
-        _onWindowResize: function() {
+        _onWindowResize: function () {
             var isMobileOrSmall = Clib.isMobileOrSmall();
-            if(this.state.isMobileOrSmall !== isMobileOrSmall)
+            if (this.state.isMobileOrSmall !== isMobileOrSmall)
                 this.setState({ isMobileOrSmall: isMobileOrSmall });
         },
 
-        _hideMessage: function() {
+        _hideMessage: function () {
             this.setState({ showMessage: false });
         },
 
@@ -98,27 +98,27 @@ define([
             this._idleTimer.setState(!StrategyEditorStore.getEditorState());
         },
 
-        _idleTimer: IdleTimer({timeout: AppConstants.Engine.IDLE_TIMEOUT}),
-        _onIdle: function() {
+        _idleTimer: IdleTimer({ timeout: AppConstants.Engine.IDLE_TIMEOUT }),
+        _onIdle: function () {
             console.log('User became idle. Disconnecting..');
             GameEngineStore.ws.disconnect();
         },
 
-        _onUnidle: function() {
+        _onUnidle: function () {
             console.log('User became active. Reconnecting..');
             GameEngineStore.ws.connect();
         },
 
-        _onRunScript: function() {
+        _onRunScript: function () {
         },
 
-        render: function() {
+        render: function () {
 
             var messageContainer;
-            if(USER_MESSAGE && this.state.showMessage) {
+            if (USER_MESSAGE && this.state.showMessage) {
 
                 var messageContent, messageClass, containerClass = 'show-message';
-                switch(USER_MESSAGE.type) {
+                switch (USER_MESSAGE.type) {
                     case 'error':
                         messageContent = D.span(null,
                             D.span(null, USER_MESSAGE.text)
@@ -127,13 +127,13 @@ define([
                         break;
                     case 'newUser':
                         messageContent = D.span(null,
-                            D.a({ href: "/request" }, "Welcome to bustabit.com, to start you can request 2 free bits or you  just watch the current games... have fun :D")
+                            D.a({ href: "/request" }, "Welcome to bcgame.com, to start you can request 2 free bits or you  just watch the current games... have fun :D")
                         );
                         messageClass = 'new-user';
                         break;
                     case 'received':
                         messageContent = D.span(null,
-                            D.span(null, "Congratulations you have been credited " +  USER_MESSAGE.qty +  " free bits. Have fun!")
+                            D.span(null, "Congratulations you have been credited " + USER_MESSAGE.qty + " free bits. Have fun!")
                         );
                         messageClass = 'received';
                         break;
@@ -164,7 +164,7 @@ define([
                 containerClass = '';
             }
 
-            var rightContainer = !this.state.isMobileOrSmall?
+            var rightContainer = !this.state.isMobileOrSmall ?
                 D.div({ id: 'game-right-container' },
                     Players(),
                     BetBar()
@@ -181,7 +181,7 @@ define([
                 D.div({ id: 'game-playable-container', className: containerClass },
 
                     //Chat and Controls
-                    D.div({ id: 'game-left-container', className: this.state.isMobileOrSmall? ' small-window' : '' },
+                    D.div({ id: 'game-left-container', className: this.state.isMobileOrSmall ? ' small-window' : '' },
                         D.div({ id: 'chart-controls-row' },
                             D.div({ id: 'chart-controls-col', className: this.state.controlsSize },
                                 D.div({ className: 'cell-wrapper' },

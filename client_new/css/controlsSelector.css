@@ -4,6 +4,8 @@
     right: 0;
     left: 0;
     bottom: 0;
+    border: 2px solid #b0b3c1;
+    border-radius: 10px;
 }
 
 #controls-selector-container .buttons-container {

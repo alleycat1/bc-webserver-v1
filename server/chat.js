@@ -1,17 +1,17 @@
-var assert   =  require('assert');
-var events   =  require('events');
-var util     =  require('util');
-var _        =  require('lodash');
-var debug    =  require('debug')('app:chat');
-var async    =  require('async');
+var assert = require('assert');
+var events = require('events');
+var util = require('util');
+var _ = require('lodash');
+var debug = require('debug')('app:chat');
+var async = require('async');
 
-var db       =  require('./database');
-var lib      =  require('./lib');
-var ips      =  require('./ips');
+var db = require('./database');
+var lib = require('./lib');
+var ips = require('./ips');
 
 /** How to use the chat on the client?
  *
- * 1.- Connect with socket.io to bustabit.com
+ * 1.- Connect with socket.io to bcgame.com
  *      The id(session) cookie on the socket.io handshake is used for authentication
  * 2.- On connect emit a join event with the channel name you want to join
  * 3.- Listen for the 'say' and other stuff
@@ -84,7 +84,7 @@ function Chat(io) {
         debug('socket connection event received');
 
         //Attach disconnect handler
-        socket.on('disconnect', function() {
+        socket.on('disconnect', function () {
             --self.clientCount;
             console.log('Client disconnect, left: ', self.clientCount);
             debug('client disconnect');
@@ -101,7 +101,7 @@ function Chat(io) {
          *  INVALID_PROPERTY
          *  INTERNAL_ERROR
          */
-        socket.on('join', function(channels, callback) {
+        socket.on('join', function (channels, callback) {
             debug('join event received from user %s', socket.user ? socket.user.username : '~guest~');
             self.join(socket, channels, callback);
         });
@@ -117,7 +117,7 @@ function Chat(io) {
          *  INVALID_PROPERTY
          *  INTERNAL_ERROR
          */
-        socket.on('leave', function(channels, callback) {
+        socket.on('leave', function (channels, callback) {
             debug('leave event received from user %s', socket.user ? socket.user.username : '~guest~');
             self.leave(socket, channels, callback);
         });
@@ -146,7 +146,7 @@ function Chat(io) {
          *  UNKNOWN_COMMAND
          *
          */
-        socket.on('say', function(message, channelName, isBot, callback) {
+        socket.on('say', function (message, channelName, isBot, callback) {
             self.onSay(socket, message, channelName, isBot, callback);
         });
 
@@ -159,27 +159,27 @@ function Chat(io) {
 
 util.inherits(Chat, events.EventEmitter);
 
-Chat.prototype.join = function(socket, channels, callback) {
+Chat.prototype.join = function (socket, channels, callback) {
     var self = this;
 
     //Callback validation
-    if(!_.isFunction(callback))
+    if (!_.isFunction(callback))
         return sendError(socket, '[join] no callback');
 
     //String channel validation
-    if(_.isString(channels)) {
-        if(isChannelNameInvalid(channels, socket.moderator)) {
+    if (_.isString(channels)) {
+        if (isChannelNameInvalid(channels, socket.moderator)) {
             debug('[Join] INVALID_CHANNEL_NAME');
             return callback('INVALID_CHANNEL_NAME', channels);
         }
         channels = [channels];
 
-    //Array of channels validation
-    } else if(_.isArray(channels)) {
-        for(var i = 0, length = channels.length; i < length; i++)
+        //Array of channels validation
+    } else if (_.isArray(channels)) {
+        for (var i = 0, length = channels.length; i < length; i++)
 
             //If the channel is not valid send a 'soft' error and remove the channel from the array
-            if(isChannelNameInvalid(channels[i], socket.moderator)) {
+            if (isChannelNameInvalid(channels[i], socket.moderator)) {
                 debug('[Join] INVALID_CHANNEL_NAME');
                 sendError(socket, '[Join] INVALID_CHANNEL_NAME');
 
@@ -194,7 +194,7 @@ Chat.prototype.join = function(socket, channels, callback) {
     }
 
     //If the user is a mod auto join them to the mods channels if not in the channels list already
-    if(socket.moderator && !socket.adapter.rooms.moderators && channels.indexOf('moderators') === -1)
+    if (socket.moderator && !socket.adapter.rooms.moderators && channels.indexOf('moderators') === -1)
         channels.push('moderators');
 
     var res = {
@@ -204,12 +204,12 @@ Chat.prototype.join = function(socket, channels, callback) {
     };
 
     //Get history of the channels and append it to the response
-    async.each(channels, function(channelName, callback) {
+    async.each(channels, function (channelName, callback) {
 
-        self.getHistory(channelName, function(err, history) {
+        self.getHistory(channelName, function (err, history) {
 
             //If we couldn't reach the history send an empty history to the user, the error was already logged
-            if(err)
+            if (err)
                 history = [];
 
             //Append the history to the response
@@ -219,17 +219,17 @@ Chat.prototype.join = function(socket, channels, callback) {
             socket.join(channelName);
 
             //If the user is mod and is not on the mods channel join him to the channel mod:channelName
-            if(socket.moderator && channelName !== 'moderators') {
-                var chan = 'mod:'+channelName;
+            if (socket.moderator && channelName !== 'moderators') {
+                var chan = 'mod:' + channelName;
                 socket.join(chan);
             }
-            
+
             //Async function success
             callback();
         });
 
-    }, function(err) {
-        if(err) {
+    }, function (err) {
+        if (err) {
             console.error('[INTERNAL_ERROR]: Error getting chat history, this error should not happen: ', err);
             return callback('INTERNAL_ERROR');
         }
@@ -239,30 +239,30 @@ Chat.prototype.join = function(socket, channels, callback) {
     });
 };
 
-Chat.prototype.leave = function(socket, channels, callback) {
+Chat.prototype.leave = function (socket, channels, callback) {
 
     //Callback validation
-    if(!_.isFunction(callback))
+    if (!_.isFunction(callback))
         return sendError(socket, '[join] no callback');
 
     //Channels validation
-    if(_.isString(channels)) {
-        if(isChannelNameInvalid(channels, socket.moderator))
+    if (_.isString(channels)) {
+        if (isChannelNameInvalid(channels, socket.moderator))
             return callback('INVALID_CHANNEL_NAME');
         channels = [channels];
-    } else if(_.isArray(channels)) {
-        for(var i = 0, length = channels.length; i < length; i++)
-            if(isChannelNameInvalid(channels[i], socket.moderator))
+    } else if (_.isArray(channels)) {
+        for (var i = 0, length = channels.length; i < length; i++)
+            if (isChannelNameInvalid(channels[i], socket.moderator))
                 return callback('INVALID_CHANNEL_NAME');
     } else {
         return callback('INVALID_PROPERTY');
     }
 
     //Leave all the channels on the array
-    async.each(channels, function(channelName, callback) {
+    async.each(channels, function (channelName, callback) {
         socket.leave(channelName, callback);
-    }, function(err) {
-        if(err) {
+    }, function (err) {
+        if (err) {
             console.error('[INTERNAL_ERROR]: Error leaving channel: ', err);
             return callback('INTERNAL_ERROR');
         }
@@ -272,20 +272,20 @@ Chat.prototype.leave = function(socket, channels, callback) {
     });
 };
 
-Chat.prototype.onSay = function(socket, message, channelName, isBot, callback) {
+Chat.prototype.onSay = function (socket, message, channelName, isBot, callback) {
 
     //Callback validation
-    if(!_.isFunction(callback))
+    if (!_.isFunction(callback))
         return sendError(socket, '[join] no callback');
 
     if (!socket.user)
         return callback('NOT_LOGGED');
 
-    if(isChannelStringInvalid(channelName))
+    if (isChannelStringInvalid(channelName))
         return callback('INVALID_CHANNEL_NAME');
 
     //Check if the message is for a non writable channel ('all')
-    if(SPECIAL_CHANNELS.hasOwnProperty(channelName) && !SPECIAL_CHANNELS[channelName].writable)
+    if (SPECIAL_CHANNELS.hasOwnProperty(channelName) && !SPECIAL_CHANNELS[channelName].writable)
         return callback('READ_ONLY_CHANNEL');
 
     //Cast is bot flag
@@ -308,11 +308,11 @@ Chat.prototype.onSay = function(socket, message, channelName, isBot, callback) {
         this.say(socket, socket.user, message, channelName, isBot, callback);
 };
 
-Chat.prototype.doChatCommand = function(user, cmdMatch, channelName, socket, callback) {
+Chat.prototype.doChatCommand = function (user, cmdMatch, channelName, socket, callback) {
     var self = this;
 
     var username;
-    var cmd  = cmdMatch[1];
+    var cmd = cmdMatch[1];
     var rest = cmdMatch[2];
 
     switch (cmd) {
@@ -352,12 +352,12 @@ Chat.prototype.doChatCommand = function(user, cmdMatch, channelName, socket, cal
 
                 username = muteMatch[1];
                 var timespec = muteMatch[2] ? muteMatch[2] : "30m";
-                var shadow   = cmd === 'shadowmute';
+                var shadow = cmd === 'shadowmute';
 
                 self.mute(shadow, user, username, timespec, channelName,
                     function (err) {
                         if (err) {
-                            if(err === 'USER_DOES_NOT_EXIST')
+                            if (err === 'USER_DOES_NOT_EXIST')
                                 return callback(err);
                             return console.error('[INTERNAL_ERROR] error on mute command: ', err);
                         }
@@ -380,8 +380,8 @@ Chat.prototype.doChatCommand = function(user, cmdMatch, channelName, socket, cal
                 username = unmuteMatch[1];
                 self.unmute(user, username, channelName,
                     function (err) {
-                        if(err) {
-                            if(err === 'USER_NOT_MUTED')
+                        if (err) {
+                            if (err === 'USER_NOT_MUTED')
                                 return callback(err);
                             return console.error('[INTERNAL_ERROR] error on unmute command: ', err);
                         }
@@ -398,13 +398,13 @@ Chat.prototype.doChatCommand = function(user, cmdMatch, channelName, socket, cal
 };
 
 Chat.prototype.getHistory = function (channelName, callback) {
-    if(channelName === 'all')
+    if (channelName === 'all')
         db.getAllChatTable(CHAT_HISTORY_SIZE, fn);
     else
         db.getChatTable(CHAT_HISTORY_SIZE, channelName, fn);
 
-    function fn (err, history) {
-        if(err) {
+    function fn(err, history) {
+        if (err) {
             console.error('[INTERNAL_ERROR] got error ', err, ' loading chat table');
             return callback(err);
         }
@@ -413,18 +413,18 @@ Chat.prototype.getHistory = function (channelName, callback) {
     }
 };
 
-Chat.prototype.say = function(socket, user, message, channelName, isBot, callback) {
+Chat.prototype.say = function (socket, user, message, channelName, isBot, callback) {
     var self = this;
 
     var date = new Date();
 
     var msg = {
-        date:      date,
-        type:      'say',
-        username:  user.username,
-        role:      user.userclass,
-        message:   message,
-        bot:       isBot,
+        date: date,
+        type: 'say',
+        username: user.username,
+        role: user.userclass,
+        message: message,
+        bot: isBot,
         channelName: channelName
     };
 
@@ -437,20 +437,20 @@ Chat.prototype.say = function(socket, user, message, channelName, isBot, callbac
         if (muted.end < date) {
             delete self.muted[user.username];
 
-        // User is shadow muted. Echo the message back to the
-        // user but don't broadcast.
+            // User is shadow muted. Echo the message back to the
+            // user but don't broadcast.
         } else if (muted.shadow) {
             return self.sendMessageToUser(socket, msg);
 
-        //Tell the user he is muted
+            //Tell the user he is muted
         } else {
             self.sendMessageToUser(socket, {
-                date:      date,
-                type:      'info',
-                username:  user.username,
-                role:      user.userclass,
-                message:   'You\'re muted. ' + lib.printTimeString(muted.end - date) + ' remaining',
-                bot:       false,
+                date: date,
+                type: 'info',
+                username: user.username,
+                role: user.userclass,
+                message: 'You\'re muted. ' + lib.printTimeString(muted.end - date) + ' remaining',
+                bot: false,
                 channelName: channelName
             });
             callback();
@@ -486,12 +486,12 @@ Chat.prototype.say = function(socket, user, message, channelName, isBot, callbac
 };
 
 /** Send a message to the user of this socket **/
-Chat.prototype.sendMessageToUser = function(socket, msg) {
+Chat.prototype.sendMessageToUser = function (socket, msg) {
     socket.emit('msg', msg);
 };
 
 /** Send a message to a channel and to the all channel and store it in the database **/
-Chat.prototype.sendMessageToChannel = function(channelName, msg, userID) {
+Chat.prototype.sendMessageToChannel = function (channelName, msg, userID) {
     console.assert(msg.hasOwnProperty('bot') && msg.date, msg.hasOwnProperty('message') && msg.type);
 
     //Send message to channel
@@ -504,24 +504,24 @@ Chat.prototype.sendMessageToChannel = function(channelName, msg, userID) {
     this.saveChatMessage(userID, msg.message, channelName, msg.bot, msg.date);
 };
 
-Chat.prototype.saveChatMessage = function(userId, message, channelName, isBot, date) {
-    db.addChatMessage(userId, date, message, channelName, isBot, function(err) {
-       if(err)
-        console.error('[INTERNAL_ERROR] got error ', err, ' saving chat message of user id ', userId);
+Chat.prototype.saveChatMessage = function (userId, message, channelName, isBot, date) {
+    db.addChatMessage(userId, date, message, channelName, isBot, function (err) {
+        if (err)
+            console.error('[INTERNAL_ERROR] got error ', err, ' saving chat message of user id ', userId);
     });
 };
 
-Chat.prototype.mute = function(shadow, moderatorUser, username, time, channelName, callback) {
+Chat.prototype.mute = function (shadow, moderatorUser, username, time, channelName, callback) {
     var self = this;
     var now = new Date();
-    var ms  = lib.parseTimeString(time);
+    var ms = lib.parseTimeString(time);
     var end = new Date(Date.now() + ms);
 
     // Query the db to make sure that the username exists.
-    db.getUserByName(username, function(err, userInfo) {
+    db.getUserByName(username, function (err, userInfo) {
 
         if (err) {
-            if(typeof err === 'string') //USER_DOES_NOT_EXIST
+            if (typeof err === 'string') //USER_DOES_NOT_EXIST
                 callback(err);
             else
                 console.error('[INTERNAL_ERROR] got error ', err, ' muting user ', userInfo.username);
@@ -531,21 +531,21 @@ Chat.prototype.mute = function(shadow, moderatorUser, username, time, channelNam
 
         // Overriding previous mutes.
         self.muted[userInfo.username] = {
-            date:        now,
-            moderator:   moderatorUser.username,
-            timespec:    time,
-            end:         end,
-            shadow:      shadow
+            date: now,
+            moderator: moderatorUser.username,
+            timespec: time,
+            end: end,
+            shadow: shadow
         };
 
         var msg = {
-            date:        now,
-            type:        'mute',
+            date: now,
+            type: 'mute',
             message: null,
-            moderator:   moderatorUser.username,
-            username:    userInfo.username,
-            timespec:    time,
-            shadow:      shadow,
+            moderator: moderatorUser.username,
+            username: userInfo.username,
+            timespec: time,
+            shadow: shadow,
             bot: false
         };
 
@@ -554,7 +554,7 @@ Chat.prototype.mute = function(shadow, moderatorUser, username, time, channelNam
             msg.channelName = 'moderators';
             self.io.to('moderators').emit('msg', msg);
             //self.io.to('mod:'+channelName).emit('msg', msg); //TODO: Send it also to the mods on the current channel
-        //If regular mute send mute message to the channel
+            //If regular mute send mute message to the channel
         } else {
 
             //Send to current channel
@@ -562,7 +562,7 @@ Chat.prototype.mute = function(shadow, moderatorUser, username, time, channelNam
             self.io.to(channelName).emit('msg', msg);
 
             //Sends to mods channel if we are not currently on it
-            if(channelName !== 'moderators') {
+            if (channelName !== 'moderators') {
 
                 msg.channelName = 'moderators';
                 self.io.to('moderators').emit('msg', msg);
@@ -573,7 +573,7 @@ Chat.prototype.mute = function(shadow, moderatorUser, username, time, channelNam
     });
 };
 
-Chat.prototype.unmute = function(moderatorUser, username, channelName, callback) {
+Chat.prototype.unmute = function (moderatorUser, username, channelName, callback) {
     var self = this;
     var now = new Date();
 
@@ -584,12 +584,12 @@ Chat.prototype.unmute = function(moderatorUser, username, channelName, callback)
     delete self.muted[username];
 
     var msg = {
-        date:      now,
-        type:      'unmute',
+        date: now,
+        type: 'unmute',
         message: null,
         moderator: moderatorUser.username,
-        username:  username,
-        shadow:    shadow,
+        username: username,
+        shadow: shadow,
         bot: false
     };
 
@@ -606,7 +606,7 @@ Chat.prototype.unmute = function(moderatorUser, username, channelName, callback)
         self.io.to(channelName).emit('msg', msg);
 
         //Sends to mods channel if we are not currently on it
-        if(channelName !== 'moderators') {
+        if (channelName !== 'moderators') {
 
             msg.channelName = 'moderators';
             self.io.to('moderators').emit('msg', msg);
@@ -624,12 +624,12 @@ function sendError(socket, description) {
 
 function isChannelNameInvalid(channelName, moderator) {
     //Check channelName variable and avoid users to join the mods channel
-    if(isChannelStringInvalid(channelName) || isChannelNameModsOnly(channelName))
+    if (isChannelStringInvalid(channelName) || isChannelNameModsOnly(channelName))
         return true;
 
     //Check if the channel is moderators only
-    if(SPECIAL_CHANNELS.hasOwnProperty(channelName))
-        if(SPECIAL_CHANNELS[channelName].modsOnly && !moderator)
+    if (SPECIAL_CHANNELS.hasOwnProperty(channelName))
+        if (SPECIAL_CHANNELS[channelName].modsOnly && !moderator)
             return true;
     return false;
 }

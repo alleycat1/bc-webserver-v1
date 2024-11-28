@@ -21,24 +21,24 @@ var database = require('./database');
 var Chat = require('./chat');
 var lib = require('./lib');
 
-debug('booting bustabit webserver');
+debug('booting bcgame webserver');
 
 /** TimeAgo Settings:
  * Simplify and de-verbosify timeago output.
  **/
 var timeago = require('timeago');
 var timeago_strings = _.extend(timeago.settings.strings, {
-  seconds: '< 1 min',
-  minute: '1 min',
-  minutes: '%d mins',
-  hour: '1 hour',
-  hours: '%d hours',
-  day: '1 day',
-  days: '%d days',
-  month: '1 month',
-  months: '%d months',
-  year: '1 year',
-  years: '%d years'
+    seconds: '< 1 min',
+    minute: '1 min',
+    minutes: '%d mins',
+    hour: '1 hour',
+    hours: '%d hours',
+    day: '1 day',
+    days: '%d days',
+    month: '1 month',
+    months: '%d months',
+    year: '1 year',
+    years: '%d years'
 });
 timeago.settings.strings = timeago_strings;
 
@@ -51,7 +51,7 @@ app.set("views", path.join(__dirname, '../views'));
 
 app.locals.recaptchaKey = config.RECAPTCHA_SITE_KEY;
 app.locals.buildConfig = config.BUILD;
-app.locals.miningFeeBits = config.MINING_FEE/100;
+app.locals.miningFeeBits = config.MINING_FEE / 100;
 
 var dotCaching = true;
 if (!config.PRODUCTION) {
@@ -62,7 +62,7 @@ if (!config.PRODUCTION) {
 app.engine("html", require("dot-emc").init(
     {
         app: app,
-        fileExtension:"html",
+        fileExtension: "html",
         options: {
             templateSettings: {
                 cache: dotCaching
@@ -88,7 +88,7 @@ app.enable('trust proxy');
 
 /** Serve Static content **/
 var twoWeeksInSeconds = 1209600;
-if(config.PRODUCTION) {
+if (config.PRODUCTION) {
     app.use(express.static(path.join(__dirname, '../build'), { maxAge: twoWeeksInSeconds * 1000 }));
 } else {
     app.use(express.static(path.join(__dirname, '../client_new'), { maxAge: twoWeeksInSeconds * 1000 }));
@@ -103,7 +103,7 @@ if(config.PRODUCTION) {
  *
  * If the user is logged append the user object to the request
  */
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     debug('incoming http request');
 
     var sessionId = req.cookies.id;
@@ -123,7 +123,7 @@ app.use(function(req, res, next) {
         return next();
     }
 
-    database.getUserBySessionId(sessionId, function(err, user) {
+    database.getUserBySessionId(sessionId, function (err, user) {
         if (err) {
             res.clearCookie('id');
             if (err === 'NOT_VALID_SESSION') {
@@ -138,7 +138,7 @@ app.use(function(req, res, next) {
         user.eligible = lib.isEligibleForGiveAway(user.last_giveaway);
         user.admin = user.userclass === 'admin';
         user.moderator = user.userclass === 'admin' ||
-                         user.userclass === 'moderator';
+            user.userclass === 'moderator';
         req.user = user;
         next();
     });
@@ -157,7 +157,7 @@ app.use(function(req, res, next) {
 function errorHandler(err, req, res, next) {
 
     if (err) {
-        if(typeof err === 'string') {
+        if (typeof err === 'string') {
             return res.render('error', { error: err });
         } else {
             if (err.stack) {
@@ -182,7 +182,7 @@ var io = socketIO(server, config.SOCKET_IO_CONFIG); //Socket io must be after th
 io.use(ioCookieParser);
 
 /** Socket io login middleware **/
-io.use(function(socket, next) {
+io.use(function (socket, next) {
     debug('incoming socket connection');
 
     var ip = '127.0.0.1';
@@ -193,15 +193,15 @@ io.use(function(socket, next) {
             ip = tmp;
     }
 
-    var sessionId = (socket.request.headers.cookie)? socket.request.headers.cookie.id : null;
+    var sessionId = (socket.request.headers.cookie) ? socket.request.headers.cookie.id : null;
 
     //If no session id or wrong the user is a guest
-    if(!sessionId || !lib.isUUIDv4(sessionId)) {
+    if (!sessionId || !lib.isUUIDv4(sessionId)) {
         socket.user = false;
         return next();
     }
 
-    database.getUserBySessionId(sessionId, function(err, user) {
+    database.getUserBySessionId(sessionId, function (err, user) {
 
         //The error is handled manually to avoid sending it into routes
         if (err) {
@@ -229,7 +229,7 @@ io.use(function(socket, next) {
 
 var chatServer = new Chat(io);
 
-var io = server.listen(config.PORT, function() {
+var io = server.listen(config.PORT, function () {
     console.log('Listening on port ', config.PORT);
 });
 

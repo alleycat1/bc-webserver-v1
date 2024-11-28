@@ -87,7 +87,7 @@ html, body {
 /* Playable container (The game) */
 #game-playable-container {
     position: absolute;
-    top: 2rem;
+    top: 2.2rem;
     right: 0;
     left: 0;
     bottom: 0;
@@ -145,7 +145,8 @@ html, body {
     bottom: 0;
     left: 65%;
     right: 0;
-    border: 1px solid #ddd;
+    border: 2px solid #b0b3c1;
+    border-radius: 10px;
     margin: 5px;
 }
 
@@ -166,7 +167,8 @@ html, body {
    ========================================================================== */
 
 #chart-controls-container {
-    border-left: 1px solid #ddd;
+    border: 2px solid #b0b3c1;
+    border-radius: 10px;
     min-height: 400px;
     display: table-row;
     height: 50%;

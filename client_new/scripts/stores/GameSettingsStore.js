@@ -1,16 +1,16 @@
-  define([
+define([
     'dispatcher/AppDispatcher',
     'constants/AppConstants',
     'lib/events',
     'lodash',
     'game-logic/clib'
-], function(
+], function (
     AppDispatcher,
     AppConstants,
     Events,
     _,
     Clib
-){
+) {
     var CHANGE_EVENT = 'change';
 
     var _themeFileName = '/css/' + (window.THEME_FILE_NAME || 'blackTheme.css'); //Global var sent by the server
@@ -28,7 +28,7 @@
     /** Hotkeys **/
     var _hotkeysActive = false; //true || false //Disabled by default!
 
-    if(localStorage['currentTheme'] === 'black')
+    if (localStorage['currentTheme'] === 'black')
         Clib.loadCss(_themeFileName, 'theme-black');
 
     /**
@@ -42,58 +42,53 @@
     //Singleton ControlsStore Object
     var GameSettingsStore = _.extend({}, Events, {
 
-        emitChange: function() {
+        emitChange: function () {
             this.trigger(CHANGE_EVENT);
         },
 
-        addChangeListener: function(callback) {
+        addChangeListener: function (callback) {
             this.on(CHANGE_EVENT, callback);
         },
 
-        removeChangeListener: function(callback) {
+        removeChangeListener: function (callback) {
             this.off(CHANGE_EVENT, callback);
         },
 
-        _toggleTheme: function() {
-            if(_currentTheme === 'white') {
-                Clib.loadCss(_themeFileName, 'theme-black');
-                _currentTheme = 'black';
-            } else {
-                Clib.removeCss('theme-black');
-                _currentTheme = 'white';
-            }
+        _toggleTheme: function () {
+            Clib.loadCss(_themeFileName, 'theme-black');
+            _currentTheme = 'black';
             localStorage['currentTheme'] = _currentTheme;
         },
 
-        _setGraphMode: function(graphMode) {
+        _setGraphMode: function (graphMode) {
             _graphMode = graphMode;
             localStorage['graphMode'] = graphMode;
         },
 
-        _setPlayerListSize: function(playerListSize) {
+        _setPlayerListSize: function (playerListSize) {
             _playerListSize = playerListSize;
             localStorage['playerListSize'] = playerListSize;
         },
 
-        _setControlsSize: function(controlsSize) {
+        _setControlsSize: function (controlsSize) {
             _controlsSize = controlsSize;
             localStorage['controlsSize'] = controlsSize;
         },
 
-        _toggleHotkeysState: function() {
+        _toggleHotkeysState: function () {
             _hotkeysActive = !_hotkeysActive;
         },
 
-        _ignoreUser: function(username) {
+        _ignoreUser: function (username) {
             // Non-destructive update
             _ignoredClientList = _.assign({}, _ignoredClientList);
             _ignoredClientList[username.toLowerCase()] = { username: username };
             localStorage['ignoredList'] = JSON.stringify(_ignoredClientList);
         },
 
-        _approveUser: function(username) {
+        _approveUser: function (username) {
             username = username.toLowerCase();
-            if(_ignoredClientList[username]) {
+            if (_ignoredClientList[username]) {
                 // Non-destructive update
                 _ignoredClientList = _.assign({}, _ignoredClientList);
                 delete _ignoredClientList[username];
@@ -101,7 +96,7 @@
             }
         },
 
-        getState: function() {
+        getState: function () {
             return {
                 graphMode: _graphMode,
                 controlsSize: _controlsSize,
@@ -113,20 +108,20 @@
             };
         },
 
-        getCurrentTheme: function() {
+        getCurrentTheme: function () {
             return _currentTheme;
         },
 
-        getIgnoredClientList: function() {
+        getIgnoredClientList: function () {
             return _ignoredClientList;
         }
 
     });
 
-    AppDispatcher.register(function(payload) {
+    AppDispatcher.register(function (payload) {
         var action = payload.action;
 
-        switch(action.actionType) {
+        switch (action.actionType) {
             case AppConstants.ActionTypes.TOGGLE_THEME:
                 GameSettingsStore._toggleTheme();
                 GameSettingsStore.emitChange();

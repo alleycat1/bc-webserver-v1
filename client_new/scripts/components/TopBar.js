@@ -5,15 +5,16 @@ define([
     'actions/GameSettingsActions',
     'game-logic/clib',
     'screenfull'
-], function(
+], function (
     React,
     Engine,
     GameSettingsStore,
     GameSettingsActions,
     Clib,
-    Screenfull //Attached to window.screenfull
 ) {
     var D = React.DOM;
+
+    GameSettingsActions.toggleTheme();
 
     function getState() {
         return {
@@ -31,13 +32,13 @@ define([
             isMobileOrSmall: React.PropTypes.bool.isRequired
         },
 
-        getInitialState: function() {
+        getInitialState: function () {
             var state = getState();
             state.fullScreen = false;
             return state;
         },
 
-        componentDidMount: function() {
+        componentDidMount: function () {
             Engine.on({
                 joined: this._onChange,
                 game_started: this._onChange,
@@ -47,7 +48,7 @@ define([
             GameSettingsStore.on('all', this._onChange);
         },
 
-        componentWillUnmount: function() {
+        componentWillUnmount: function () {
             Engine.off({
                 joined: this._onChange,
                 game_started: this._onChange,
@@ -57,40 +58,27 @@ define([
             GameSettingsStore.off('all', this._onChange);
         },
 
-        _onChange: function() {
-            if(this.isMounted())
+        _onChange: function () {
+            if (this.isMounted())
                 this.setState(getState());
         },
 
-        _toggleTheme: function() {
-            GameSettingsActions.toggleTheme();
-        },
-
-        _toggleFullScreen: function() {
-        	window.screenfull.toggle();
-            this.setState({ fullScreen: !this.state.fullScreen });
-        },
-
-        render: function() {
+        render: function () {
 
             var userLogin;
             if (this.state.username) {
                 userLogin = D.div({ className: 'user-login' },
-                    D.div({ className: 'balance-bits' },
-                        D.span(null, 'Bits: '),
-                        D.span({ className: 'balance' }, this.state.balanceBitsFormatted )
-                    ),
                     D.div({ className: 'username' },
-                        D.a({ href: '/account'}, this.state.username
-                    ))
+                        D.a({ href: '/account' }, this.state.username
+                        ))
                 );
             } else {
                 userLogin = D.div({ className: 'user-login' },
                     D.div({ className: 'register' },
-                        D.a({ href: '/register' }, 'Register' )
+                        D.a({ href: '/register' }, 'Register')
                     ),
                     D.div({ className: 'login' },
-                        D.a({ href: '/login'}, 'Log in' )
+                        D.a({ href: '/login' }, 'Log in')
                     )
                 );
             }
@@ -98,18 +86,10 @@ define([
             return D.div({ id: 'top-bar' },
                 D.div({ className: 'title' },
                     D.a({ href: '/' },
-                        D.h1(null, this.props.isMobileOrSmall? 'BaB' : 'bustabit')
+                        D.h1(null, this.props.isMobileOrSmall ? 'BC' : 'BC Game')
                     )
                 ),
                 userLogin,
-                D.div({ className: 'toggle-view noselect' + ((this.state.theme === 'white')? ' black' : ' white'), onClick: this._toggleTheme },
-                    D.a(null,
-                        (this.state.theme === 'white')? 'Go black' : 'Go back'
-                    )
-                ),
-                D.div({ className: 'full-screen noselect', onClick: this._toggleFullScreen },
-                	 this.state.fullScreen? D.i({ className: 'fa fa-compress' }) : D.i({ className: 'fa fa-expand' })
-            	)
             )
         }
     });

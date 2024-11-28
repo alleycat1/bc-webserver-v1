@@ -17,10 +17,14 @@
 
 #chart-container {
     position: absolute;
-    top: 10px;
+    top: 6px;
     bottom: 10px;
-    left: 10px;
-    right: calc(40% + 10px);
+    left: 6px;
+    right: 6px;
+    width: 59%;
+    height: 97%;
+    border: 2px solid #b0b3c1;
+    border-radius: 10px;
 }
 
 #controls-container {
@@ -29,7 +33,8 @@
     bottom: 0;
     left: 60%;
     right: 0;
-    border: 1px solid #ddd;
+    border: 2px solid #b0b3c1;
+    border-radius: 10px;
     margin: 5px;
 }
 

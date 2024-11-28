@@ -61,7 +61,8 @@ body {
    ========================================================================== */
 
 #game-right-container {
-    border-color: #292d35;
+    border: 2px solid #b0b3c1;
+    border-radius: 10px;
 }
 
 
@@ -71,18 +72,22 @@ body {
 
 #controls-selector-container .button-holder {
     background-color: #292d35;
+    border-radius: 10px;
 }
 
 #controls-selector-container .button-holder a {
     color: #b0b3c1;
+    border-radius: 10px;
 }
 
 #controls-selector-container .controls-widget-container{
     background-color: #181a1e;
+    border-radius: 10px;
 }
 
 #controls-selector-container .button-holder.tab-active {
     background-color: #181a1e;
+    border-radius: 10px;
 }
 
 
@@ -139,34 +144,44 @@ body {
 
 #tabs-inner-container .widget-container {
     background-color: #181a1e;
+    border-radius: 10px;
 }
 
 #tabs-inner-container, #tabs-inner-container .log-chat-container {
-    border-color: #292d35;
+    border: 2px solid #b0b3c1;
+    border-radius: 10px;
 }
 
 #tabs-inner-container .tab-container li.tab.col-3, #tabs-inner-container .tab-container li.tab.col-4 {
-    background-color: #292d35;
+    border: 2px solid #b0b3c1;
+    border-radius: 10px;
 }
 
 #tabs-inner-container .tab-container li.tab.tab-active {
     background-color: #181a1e;
+    border-radius: 10px;
+    border-radius: 10px;
 }
 
 #tabs-inner-container .tab-container li.tab {
-	background-color: #292d35;
+    border-radius: 10px;
+    background-color: #292d35;
+    border-radius: 10px;
 }
 
 #tabs-inner-container .tab-container li.tab a {
     color: #b0b3c1;
+    border-radius: 10px;
 }
 
 #tabs-inner-container .tab-container .tab-settings {
+    border-radius: 10px;
     background-color: #292d35;
 }
 
 #tabs-inner-container .tab-container .tab-settings.tab-active {
     background-color: #181a1e;
+    border-radius: 10px;
 }
 
 
@@ -267,10 +282,12 @@ body {
 
 #players-container .header-bg {
     background-color: #292d35;
+    border-radius: 10px 10px 0 0;
 }
 
 #players-container table .th-inner {
     color: #b0b3c1;
+    border-radius: 10px;
 }
 
 

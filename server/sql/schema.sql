@@ -318,12 +318,12 @@ CREATE OR REPLACE FUNCTION plays_users_stats_trigger()
       bonus   = NEW.bonus || 0;
       cashOut = NEW.cash_out || 0;
 			
-	  cash_offset = BigInt(cashOut) - BigInt(bet);
-	
-	  if( cash_offset > 0)
-		gross += cash_offset + BigInt(bonus);
-	  else
-		gross  += BigInt(bonus);
+			cash_offset = BigInt(cashOut) - BigInt(bet);
+			
+			if( cash_offset > 0)
+				gross += cash_offset + BigInt(bonus);
+			else
+				gross  += BigInt(bonus);
       net    += cash_offset + BigInt(bonus);
       num    += BigInt(1);
     }
@@ -335,12 +335,12 @@ CREATE OR REPLACE FUNCTION plays_users_stats_trigger()
       bonus   = OLD.bonus || 0;
       cashOut = OLD.cash_out || 0;
 
-	  cash_offset = BigInt(cashOut) - BigInt(bet);
-	
-	  if( cash_offset > 0)
-		net    += cash_offset + BigInt(bonus);
-	  else
-		gross  += BigInt(bonus);
+			cash_offset = BigInt(cashOut) - BigInt(bet);
+			
+			if( cash_offset > 0)
+				net    += cash_offset + BigInt(bonus);
+			else
+				gross  += BigInt(bonus);
       net    += cash_offset + BigInt(bonus);;
       num    -= BigInt(1);
     }

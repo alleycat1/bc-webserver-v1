@@ -229,7 +229,7 @@ io.use(function(socket, next) {
 
 var chatServer = new Chat(io);
 
-server.listen(config.PORT, function() {
+var io = server.listen(config.PORT, function() {
     console.log('Listening on port ', config.PORT);
 });
 

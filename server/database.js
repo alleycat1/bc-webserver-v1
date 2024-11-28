@@ -5,9 +5,18 @@ var config = require('../config/config');
 var async = require('async');
 var lib = require('./lib');
 var pg = require('pg');
+const { Client } = require('pg');
 var passwordHash = require('password-hash');
 var speakeasy = require('speakeasy');
 var m = require('multiline');
+
+var db_config = {
+    user: "bustabit", // name of the user account
+    database: "bustabitdb", // name of the database
+    password: "bustabit",
+    max: 50, // max number of clients in the pool
+    idleTimeoutMillis: 30000 
+}
 
 var databaseUrl = config.DATABASE_URL;
 
@@ -21,8 +30,20 @@ pg.types.setTypeParser(20, function(val) { // parse int8 as an integer
 });
 
 // callback is called with (err, client, done)
+function done(client){
+    client.release();
+}
+
+var pool = new pg.Pool(db_config);
+
 function connect(callback) {
-    return pg.connect(databaseUrl, callback);
+    const client = new Client({
+        connectionString:databaseUrl
+        });
+    client.connect(function(err) {
+        callback(err, client, done);
+    });
+    //return pg.connect(databaseUrl, callback);
 }
 
 function query(query, params, callback) {
@@ -34,10 +55,10 @@ function query(query, params, callback) {
 
     doIt();
     function doIt() {
-        connect(function(err, client, done) {
+        pool.connect(function(err, client, done) {
             if (err) return callback(err);
             client.query(query, params, function(err, result) {
-                done();
+                done(client);
                 if (err) {
                     if (err.code === '40P01') {
                         console.error('[INTERNAL] Warning: Retrying deadlocked transaction: ', query, params);
@@ -54,9 +75,11 @@ function query(query, params, callback) {
 
 exports.query = query;
 
+/*
 pg.on('error', function(err) {
     console.error('POSTGRES EMITTED AN ERROR', err);
 });
+*/
 
 
 // runner takes (client, callback)
@@ -70,7 +93,7 @@ function getClient(runner, callback) {
     doIt();
 
     function doIt() {
-        connect(function (err, client, done) {
+        pool.connect(function (err, client, done) {
             if (err) return callback(err);
 
             function rollback(err) {
@@ -96,7 +119,7 @@ function getClient(runner, callback) {
                         if (err)
                             return rollback(err);
 
-                        done();
+                        done(client);
                         callback(null, data);
                     });
                 });

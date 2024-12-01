@@ -11,13 +11,22 @@
 
 #top-bar .title {
     float: left;
-    vertical-align: middle;
+    align-content: center;
 }
 
 #top-bar .title h1 {
     color: #e58929;
     line-height: 2rem;
     font-size: 1.5rem;
+    font-weight: bold;
+    padding-left: 1rem;
+    font-family: "Courier New";
+}
+
+#top-bar .title h3 {
+    color: #e58929;
+    line-height: 2rem;
+    font-size: 1rem;
     font-weight: bold;
     padding-left: 1rem;
     font-family: "Courier New";

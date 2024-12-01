@@ -69,7 +69,7 @@ define([
             if (this.state.username) {
                 userLogin = D.div({ className: 'user-login' },
                     D.div({ className: 'balance-bits' },
-                        D.span(null, 'SHIDO: '),
+                        D.span(null, 'SHIDOs: '),
                         D.span({ className: 'balance' }, this.state.balanceBitsFormatted)
                     ),
                     D.div({ className: 'username' },

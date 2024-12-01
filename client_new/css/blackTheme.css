@@ -153,20 +153,17 @@ body {
 }
 
 #tabs-inner-container .tab-container li.tab.col-3, #tabs-inner-container .tab-container li.tab.col-4 {
-    border: 2px solid #b0b3c1;
     border-radius: 10px;
 }
 
 #tabs-inner-container .tab-container li.tab.tab-active {
     background-color: #181a1e;
     border-radius: 10px;
-    border-radius: 10px;
 }
 
 #tabs-inner-container .tab-container li.tab {
     border-radius: 10px;
     background-color: #292d35;
-    border-radius: 10px;
 }
 
 #tabs-inner-container .tab-container li.tab a {

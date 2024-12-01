@@ -13,9 +13,9 @@ var production = process.env.NODE_ENV === 'production';
 
 function staticPageLogged(page, loggedGoTo) {
 
-    return function(req, res) {
+    return function (req, res) {
         var user = req.user;
-        if (!user){
+        if (!user) {
             return res.render(page);
         }
         if (loggedGoTo) return res.redirect(loggedGoTo);
@@ -29,20 +29,20 @@ function staticPageLogged(page, loggedGoTo) {
 function contact(origin) {
     assert(typeof origin == 'string');
 
-    return function(req, res, next) {
+    return function (req, res, next) {
         var user = req.user;
         var from = req.body.email;
         var message = req.body.message;
 
-        if (!from ) return res.render(origin, { user: user, warning: 'email required' });
+        if (!from) return res.render(origin, { user: user, warning: 'email required' });
 
         if (!message) return res.render(origin, { user: user, warning: 'message required' });
 
         if (user) message = 'user_id: ' + req.user.id + '\n' + message;
 
-        sendEmail.contact(from, message, null, function(err) {
+        sendEmail.contact(from, message, null, function (err) {
             if (err)
-                return next(new Error('Error sending email: \n' + err ));
+                return next(new Error('Error sending email: \n' + err));
 
             return res.render(origin, { user: user, success: 'Thank you for writing, one of my humans will write you back very soon :) ' });
         });
@@ -51,18 +51,18 @@ function contact(origin) {
 
 function restrict(req, res, next) {
     if (!req.user) {
-       res.status(401);
-       if (req.header('Accept') === 'text/plain')
-          res.send('Not authorized');
-       else
-          res.render('401');
-       return;
+        res.status(401);
+        if (req.header('Accept') === 'text/plain')
+            res.send('Not authorized');
+        else
+            res.render('401');
+        return;
     } else
         next();
 }
 
 function restrictRedirectToHome(req, res, next) {
-    if(!req.user) {
+    if (!req.user) {
         res.redirect('/');
         return;
     }
@@ -112,7 +112,7 @@ function recaptchaRestrict(req, res, next) {
 
 
 function table() {
-    return function(req, res) {
+    return function (req, res) {
         res.render('table_old', {
             user: req.user,
             table: true
@@ -121,7 +121,7 @@ function table() {
 }
 
 function tableNew() {
-    return function(req, res) {
+    return function (req, res) {
 
         res.render('table_new', {
             user: req.user,
@@ -132,10 +132,10 @@ function tableNew() {
 }
 
 function tableDev() {
-    return function(req, res) {
-        if(config.PRODUCTION)
+    return function (req, res) {
+        if (config.PRODUCTION)
             return res.status(401);
-        requestDevOtt(req.params.id, function(devOtt) {
+        requestDevOtt(req.params.id, function (devOtt) {
             res.render('table_new', {
                 user: req.user,
                 devOtt: devOtt,
@@ -148,12 +148,12 @@ function requestDevOtt(id, callback) {
     var curl = require('curlrequest');
     var options = {
         url: 'https://www.bustabit.com/ott',
-        include: true ,
+        include: true,
         method: 'POST',
-        'cookie': 'id='+id
+        'cookie': 'id=' + id
     };
 
-    var ott=null;
+    var ott = null;
     curl.request(options, function (err, parts) {
         parts = parts.split('\r\n');
         var data = parts.pop()
@@ -164,7 +164,7 @@ function requestDevOtt(id, callback) {
     });
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
 
     app.get('/', staticPageLogged('index'));
     app.get('/weak-password', staticPageLogged('weak-password'));
@@ -197,8 +197,8 @@ module.exports = function(app) {
     app.get('/game/:id.json', games.getGameInfoJson);
     app.get('/game/:id', games.show);
     app.get('/user/:name', user.profile);
-    app.get('/error', function(req, res, next) { // Sometimes we redirect people to /error
-      return res.render('error');
+    app.get('/error', function (req, res, next) { // Sometimes we redirect people to /error
+        return res.render('error');
     });
 
     app.post('/request', restrict, recaptchaRestrict, user.giveawayRequest);
@@ -216,12 +216,12 @@ module.exports = function(app) {
     app.post('/login', recaptchaRestrict, user.login);
     app.post('/register', recaptchaRestrict, user.register);
 
-    app.post('/ott', restrict, function(req, res, next) {
+    app.post('/ott', restrict, function (req, res, next) {
         var user = req.user;
         var ipAddress = req.ip;
         var userAgent = req.get('user-agent');
         assert(user);
-        database.createOneTimeToken(user.id, ipAddress, userAgent, function(err, token) {
+        database.createOneTimeToken(user.id, ipAddress, userAgent, function (err, token) {
             if (err) {
                 console.error('[INTERNAL_ERROR] unable to get OTT got ' + err);
                 res.status(500);
@@ -239,7 +239,7 @@ module.exports = function(app) {
     app.get('/admin-giveaway', adminRestrict, admin.giveAway);
     app.post('/admin-giveaway', adminRestrict, admin.giveAwayHandle);
 
-    app.get('*', function(req, res) {
+    app.get('*', function (req, res) {
         res.status(404);
         res.render('404');
     });

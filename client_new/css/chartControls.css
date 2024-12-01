@@ -5,7 +5,8 @@
 @media handheld, only screen and (max-width: 767px) {
     #chart-controls-inner-container {
         min-height: 7rem;
-
+        width: 100%;
+        height: 100%;
     }
 }
 /* Big Screens with small controls */
@@ -58,14 +59,17 @@
     
     #chart-container {
         top: 0;
-        bottom: 4.6rem;
+        bottom: 4.4rem;
         left: 0;
         right: 0;
-        margin: 0.5rem;
+        margin: 0.4rem;
+        
+        width: calc(100% - 0.8rem);
+        height: calc(100% - 5rem);
     }
 
     #controls-container{
-        top: calc(100% - 4.6rem);
+        top: calc(100% - 4.4rem);
         bottom: 0;
         left: 0;
         right: 0;

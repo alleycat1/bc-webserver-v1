@@ -8,7 +8,7 @@ define([
     'actions/ControlsActions',
     'stores/ControlsStore',
     'game-logic/engine'
-], function(
+], function (
     React,
     Clib,
     _,
@@ -18,7 +18,7 @@ define([
     ControlsActions,
     ControlsStore,
     Engine
-){
+) {
 
     var Countdown = React.createFactory(CountDownClass);
     var BetButton = React.createFactory(BetButtonClass);
@@ -26,7 +26,7 @@ define([
 
     var D = React.DOM;
 
-    function getState(){
+    function getState() {
         return {
             betSize: ControlsStore.getBetSize(),
             cashOut: ControlsStore.getCashOut(),
@@ -42,7 +42,7 @@ define([
         },
 
 
-        componentDidMount: function() {
+        componentDidMount: function () {
             ControlsStore.addChangeListener(this._onChange);
             Engine.on({
                 game_started: this._onChange,
@@ -59,7 +59,7 @@ define([
             });
         },
 
-        componentWillUnmount: function() {
+        componentWillUnmount: function () {
             ControlsStore.removeChangeListener(this._onChange);
             Engine.off({
                 game_started: this._onChange,
@@ -77,10 +77,10 @@ define([
             });
         },
 
-        _onChange: function() {
+        _onChange: function () {
             //Check if its mounted because when Game view receives the disconnect event from EngineVirtualStore unmounts all views
             //and the views unregister their events before the event dispatcher dispatch them with the disconnect event
-            if(this.isMounted())
+            if (this.isMounted())
                 this.setState(getState());
         },
 
@@ -97,19 +97,19 @@ define([
             ControlsActions.placeBet(bet, cashOut);
         },
 
-        _cancelBet: function() {
+        _cancelBet: function () {
             ControlsActions.cancelBet();
         },
 
-        _cashOut: function() {
+        _cashOut: function () {
             ControlsActions.cashOut();
         },
 
-        _setBetSize: function(betSize) {
+        _setBetSize: function (betSize) {
             ControlsActions.setBetSize(betSize);
         },
 
-        _setAutoCashOut: function(autoCashOut) {
+        _setAutoCashOut: function (autoCashOut) {
             ControlsActions.setAutoCashOut(autoCashOut);
         },
 
@@ -118,18 +118,18 @@ define([
             var self = this;
 
             if (self.state.engine.balanceSatoshis < 100)
-                return 'Not enough bits to play';
+                return 'Not enough SHIDOs to play';
 
             var bet = Clib.parseBet(self.state.betSize);
-            if(bet instanceof Error)
+            if (bet instanceof Error)
                 return bet.message;
 
             var co = Clib.parseAutoCash(self.state.cashOut);
-            if(co instanceof Error)
+            if (co instanceof Error)
                 return co.message;
 
             if (self.state.engine.balanceSatoshis < bet * 100)
-                return 'Not enough bits';
+                return 'Not enough SHIDOs';
 
             return null;
         },
@@ -147,9 +147,9 @@ define([
                     return D.span(null, 'Currently playing...');
                 } else if (pi && pi.stopped_at) { // user has cashed out
                     return D.span(null, 'Cashed Out @  ',
-                        D.b({className: 'green'}, pi.stopped_at / 100, 'x'),
+                        D.b({ className: 'green' }, pi.stopped_at / 100, 'x'),
                         ' / Won: ',
-                        D.b({className: 'green'}, Clib.formatSatoshis(pi.bet * pi.stopped_at / 100)),
+                        D.b({ className: 'green' }, Clib.formatSatoshis(pi.bet * pi.stopped_at / 100)),
                         ' ', Clib.grammarBits(pi.bet * pi.stopped_at / 100)
                     );
 
@@ -169,9 +169,9 @@ define([
                     }
 
                     return D.span(null, 'Cashed Out @ ',
-                        D.b({className: 'green'}, pi.stopped_at / 100, 'x'),
+                        D.b({ className: 'green' }, pi.stopped_at / 100, 'x'),
                         ' / Won: ',
-                        D.b({className: 'green'}, Clib.formatSatoshis(pi.bet * pi.stopped_at / 100)),
+                        D.b({ className: 'green' }, Clib.formatSatoshis(pi.bet * pi.stopped_at / 100)),
                         ' ', Clib.grammarBits(pi.bet * pi.stopped_at / 1000),
                         bonus
                     );
@@ -185,21 +185,21 @@ define([
                     }
 
                     return D.span(null,
-                        'Busted @ ', D.b({className: 'red'},
+                        'Busted @ ', D.b({ className: 'red' },
                             this.state.engine.tableHistory[0].game_crash / 100, 'x'),
-                        ' / You lost ', D.b({className: 'red'}, pi.bet / 100), ' ', Clib.grammarBits(pi.bet),
+                        ' / You lost ', D.b({ className: 'red' }, pi.bet / 100), ' ', Clib.grammarBits(pi.bet),
                         bonus
                     );
 
                 } else { // didn't bet
 
-                  if (this.state.engine.tableHistory[0].game_crash === 0) {
-                    return D.span(null, D.b({className: 'red'}, 'INSTABUST!'));
-                  }
+                    if (this.state.engine.tableHistory[0].game_crash === 0) {
+                        return D.span(null, D.b({ className: 'red' }, 'INSTABUST!'));
+                    }
 
-                  return D.span(null,
-                      'Busted @ ', D.b({className: 'red'}, this.state.engine.tableHistory[0].game_crash / 100, 'x')
-                  );
+                    return D.span(null,
+                        'Busted @ ', D.b({ className: 'red' }, this.state.engine.tableHistory[0].game_crash / 100, 'x')
+                    );
                 }
 
             }
@@ -220,7 +220,7 @@ define([
                         self._setBetSize(e.target.value);
                     }
                 }),
-                D.span({ className: 'sticky' }, 'Bits')
+                D.span({ className: 'sticky' }, 'SHIDOs')
             );
 
             var autoCashOut = D.div(null,
@@ -257,9 +257,9 @@ define([
             // If they're not logged in, let just show a login to play
             if (!this.state.engine.username)
                 return D.div({ className: 'login-container grid grid-pad' },
-                    D.div({ className: 'controls'},
-                        D.div({ className: 'login'}, D.a({className: 'big-button unselect', href: '/login' }, 'Login to play'),
-                            D.a({ href: '/register', className: 'register'}, 'or register ')
+                    D.div({ className: 'controls' },
+                        D.div({ className: 'login' }, D.a({ className: 'big-button unselect', href: '/login' }, 'Login to play'),
+                            D.a({ href: '/register', className: 'register' }, 'or register ')
                         )
                     )
                 );
@@ -304,13 +304,13 @@ define([
                 buttonClass = 'col-1-1 mobile-col-1-1';
                 controlInputs = null;
             }
-            buttonCol = D.div({ className: buttonClass }, button );
+            buttonCol = D.div({ className: buttonClass }, button);
 
             //If the user is logged in render the controls
             return D.div(null,
                 D.div({ className: 'controls-container' },
 
-                    D.h5({ className: 'information'},
+                    D.h5({ className: 'information' },
                         this._getStatusMessage()
                     ),
 
@@ -320,7 +320,7 @@ define([
                     )
                 ),
 
-                D.div({ className: 'hash-cont'  },
+                D.div({ className: 'hash-cont' },
                     D.span({ className: 'hash-text' }, 'Last Hash'),
                     D.input({ className: 'hash-input', type: 'text', value: this.state.engine.lastHash, readOnly: true })
                 )

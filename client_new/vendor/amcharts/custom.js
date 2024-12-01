@@ -1,17 +1,17 @@
 function CustomChart(startingFrom, cum, chartData) {
 
     chartData.reverse();
-    chartData.forEach(function(entry, i) {
+    chartData.forEach(function (entry, i) {
         var profit = (entry.cash_out ? entry.cash_out : 0) + (entry.bonus ? entry.bonus : 0) - entry.bet;
         cum += profit;
-        entry.cum_profit = (cum/100);
-        entry.n = startingFrom+i;
+        entry.cum_profit = (cum / 100);
+        entry.n = startingFrom + i;
         if (profit > 0) {
-          entry.force_color = 'green'
+            entry.force_color = 'green'
         } else if (profit < 0) {
-          entry.force_color = 'red'
+            entry.force_color = 'red'
         } else {
-          entry.force_color = 'gray'
+            entry.force_color = 'gray'
         }
     });
 
@@ -24,11 +24,11 @@ function CustomChart(startingFrom, cum, chartData) {
             var r = "<table>" +
                 "<tr><th>Game Id:</th><td>" + entry.game_id + "<br><small>(" + entry.timeago + ")</small>" +
                 "</td></tr>" +
-                '<tr><th>Bet:</th><td>' + (entry.bet/100).toFixed() + ' bits</td></tr>' +
-                "<tr><th>Crash At:</th><td>" + (typeof entry.game_crash !== 'undefined' ? (entry.game_crash/100).toFixed(2) + 'x' : '?') + "</td></tr>" +
+                '<tr><th>Bet:</th><td>' + (entry.bet / 100).toFixed() + ' SHIDOs</td></tr>' +
+                "<tr><th>Crash At:</th><td>" + (typeof entry.game_crash !== 'undefined' ? (entry.game_crash / 100).toFixed(2) + 'x' : '?') + "</td></tr>" +
                 "<tr><th>Cashed Out:</th><td>" + (entry.cash_out ? (entry.cash_out / entry.bet).toFixed(2) + 'x' : '-') + "</td></tr>" +
-                '<tr><th>Bonus: </th><td>' + (entry.bonus ? (entry.bonus/100).toFixed(2) : 0) + ' bits</td></tr>' +
-                "<tr><th>Profit:</th><td><b>" + (profit/100).toFixed(2) + " bits</b></td></tr>" +
+                '<tr><th>Bonus: </th><td>' + (entry.bonus ? (entry.bonus / 100).toFixed(2) : 0) + ' SHIDOs</td></tr>' +
+                "<tr><th>Profit:</th><td><b>" + (profit / 100).toFixed(2) + " SHIDOs</b></td></tr>" +
                 '</table>';
             return r;
 
@@ -75,7 +75,7 @@ function CustomChart(startingFrom, cum, chartData) {
 
         chart.addListener("clickGraphItem", function (event) {
             var gameId = event.item.dataContext.game_id;
-            window.location="/game/" + gameId;
+            window.location = "/game/" + gameId;
         });
 
 

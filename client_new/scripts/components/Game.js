@@ -127,13 +127,13 @@ define([
                         break;
                     case 'newUser':
                         messageContent = D.span(null,
-                            D.a({ href: "/request" }, "Welcome to bcgame.com, to start you can request 2 free bits or you  just watch the current games... have fun :D")
+                            D.a({ href: "/request" }, "Welcome to bcgame.com, to start you can request 2 free SHIDOs or you  just watch the current games... have fun :D")
                         );
                         messageClass = 'new-user';
                         break;
                     case 'received':
                         messageContent = D.span(null,
-                            D.span(null, "Congratulations you have been credited " + USER_MESSAGE.qty + " free bits. Have fun!")
+                            D.span(null, "Congratulations you have been credited " + USER_MESSAGE.qty + " free SHIDOs. Have fun!")
                         );
                         messageClass = 'received';
                         break;
@@ -145,7 +145,7 @@ define([
                         break;
                     case 'collect':
                         messageContent = D.span(null,
-                            D.a({ href: '/request' }, 'Collect your two free bits!')
+                            D.a({ href: '/request' }, 'Collect your two free SHIDOs!')
                         );
                         messageClass = 'collect';
                         break;

@@ -16,7 +16,7 @@ var zxcvbn = require('zxcvbn');
 
 var sessionOptions = {
     httpOnly: true,
-    secure : config.PRODUCTION
+    secure: config.PRODUCTION
 };
 
 /**
@@ -24,7 +24,7 @@ var sessionOptions = {
  * Public API
  * Register a user
  */
-exports.register  = function(req, res, next) {
+exports.register = function (req, res, next) {
     var values = _.merge(req.body, { user: {} });
     var username = lib.removeNullsAndTrim(values.user.name);
     var password = lib.removeNullsAndTrim(values.user.password);
@@ -56,15 +56,15 @@ exports.register  = function(req, res, next) {
     // Ensure password and confirmation match
     if (password !== password2) {
         return res.render('register', {
-          warning: 'password and confirmation did not match'
+            warning: 'password and confirmation did not match'
         });
     }
 
-    database.createUser(username, password, email, ipAddress, userAgent, fp, function(err, sessionId) {
+    database.createUser(username, password, email, ipAddress, userAgent, fp, function (err, sessionId) {
         if (err) {
             if (err === 'USERNAME_TAKEN') {
                 values.user.name = null;
-                return res.render('register', { warning: 'User name taken...', values: values.user});
+                return res.render('register', { warning: 'User name taken...', values: values.user });
             }
             return next(new Error('Unable to register user: \n' + err));
         }
@@ -78,7 +78,7 @@ exports.register  = function(req, res, next) {
  * Public API
  * Login a user
  */
-exports.login = function(req, res, next) {
+exports.login = function (req, res, next) {
     var username = lib.removeNullsAndTrim(req.body.username);
     var password = lib.removeNullsAndTrim(req.body.password);
     var fp = lib.removeNullsAndTrim(req.body.fp);
@@ -90,17 +90,17 @@ exports.login = function(req, res, next) {
     if (!username || !password)
         return res.render('login', { warning: 'no username or password' });
 
-    database.validateUser(username, password, otp, function(err, userId) {
+    database.validateUser(username, password, otp, function (err, userId) {
         if (err) {
             console.log('[Login] Error for ', username, ' err: ', err);
 
             if (err === 'NO_USER')
-                return res.render('login',{ warning: 'Username does not exist' });
+                return res.render('login', { warning: 'Username does not exist' });
             if (err === 'WRONG_PASSWORD') {
                 assert(userId);
                 console.log('Wrong password for: ', username, ' was ', password, ' and ua: ', userAgent, ' and fp: ', fp, ' and ip ', ipAddress);
                 database.logFailedLogin(userId, ipAddress, userAgent, fp);
-                return res.render('login', {warning: 'Invalid password'});
+                return res.render('login', { warning: 'Invalid password' });
             }
             if (err === 'INVALID_OTP') {
                 var warning = otp ? 'Invalid one-time password' : undefined;
@@ -110,11 +110,11 @@ exports.login = function(req, res, next) {
         }
         assert(userId);
 
-        database.createSession(userId, ipAddress, userAgent, remember, fp, function(err, sessionId, expires) {
+        database.createSession(userId, ipAddress, userAgent, remember, fp, function (err, sessionId, expires) {
             if (err)
-                return next(new Error('Unable to create session for userid ' + userId +  ':\n' + err));
+                return next(new Error('Unable to create session for userid ' + userId + ':\n' + err));
 
-            if(remember)
+            if (remember)
                 sessionOptions.expires = expires;
 
             res.cookie('id', sessionId, sessionOptions);
@@ -132,13 +132,13 @@ exports.login = function(req, res, next) {
  * Logged API
  * Logout the current user
  */
-exports.logout = function(req, res, next) {
+exports.logout = function (req, res, next) {
     var sessionId = req.cookies.id;
     var userId = req.user.id;
 
     assert(sessionId && userId);
 
-    database.expireSessionsByUserId(userId, function(err) {
+    database.expireSessionsByUserId(userId, function (err) {
         if (err)
             return next(new Error('Unable to logout got error: \n' + err));
         res.redirect('/');
@@ -150,7 +150,7 @@ exports.logout = function(req, res, next) {
  * Logged API
  * Shows the graph of the user profit and games
  */
-exports.profile = function(req, res, next) {
+exports.profile = function (req, res, next) {
 
     var user = req.user; //If logged here is the user info
     var username = lib.removeNullsAndTrim(req.params.name);
@@ -165,10 +165,10 @@ exports.profile = function(req, res, next) {
     if (!username)
         return next('No username in profile');
 
-    database.getPublicStats(username, function(err, stats) {
+    database.getPublicStats(username, function (err, stats) {
         if (err) {
             if (err === 'USER_DOES_NOT_EXIST')
-               return next('User does not exist');
+                return next('User does not exist');
             else
                 return next(new Error('Cant get public stats: \n' + err));
         }
@@ -187,26 +187,26 @@ exports.profile = function(req, res, next) {
             return next('User does not have page ', page);
 
         // first page absorbs all overflow
-        var firstPageResultCount = stats.games_played - ((pages-1) * resultsPerPage);
+        var firstPageResultCount = stats.games_played - ((pages - 1) * resultsPerPage);
 
         var showing = page ? resultsPerPage : firstPageResultCount;
-        var offset = page ? (firstPageResultCount + ((pages - page - 1) * resultsPerPage)) : 0 ;
+        var offset = page ? (firstPageResultCount + ((pages - page - 1) * resultsPerPage)) : 0;
 
         if (offset > 100000) {
-          return next('Sorry we can\'t show games that far back :( ');
+            return next('Sorry we can\'t show games that far back :( ');
         }
 
         var tasks = [
-            function(callback) {
+            function (callback) {
                 database.getUserNetProfitLast(stats.user_id, showing + offset, callback);
             },
-            function(callback) {
+            function (callback) {
                 database.getUserPlays(stats.user_id, showing, offset, callback);
             }
         ];
 
 
-        async.parallel(tasks, function(err, results) {
+        async.parallel(tasks, function (err, results) {
             if (err) return next(new Error('Error getting user profit: \n' + err));
 
             var lastProfit = results[0];
@@ -220,7 +220,7 @@ exports.profile = function(req, res, next) {
 
             assert(plays);
 
-            plays.forEach(function(play) {
+            plays.forEach(function (play) {
                 play.timeago = timeago(play.created);
             });
 
@@ -234,9 +234,9 @@ exports.profile = function(req, res, next) {
 
             var nextPage;
             if (pages > 1) {
-                if (page && page < (pages-1))
-                    nextPage ='?p=' + (page + 1);
-                else if (page && page == pages-1)
+                if (page && page < (pages - 1))
+                    nextPage = '?p=' + (page + 1);
+                else if (page && page == pages - 1)
                     nextPage = stats.username;
             }
 
@@ -248,10 +248,10 @@ exports.profile = function(req, res, next) {
                 showing_last: !!page,
                 previous_page: previousPage,
                 next_page: nextPage,
-                games_from: stats.games_played-(offset + showing - 1),
-                games_to: stats.games_played-offset,
+                games_from: stats.games_played - (offset + showing - 1),
+                games_to: stats.games_played - offset,
                 pages: {
-                    current: page == 0 ? 1 : page + 1 ,
+                    current: page == 0 ? 1 : page + 1,
                     total: Math.ceil(stats.games_played / 100)
                 }
             });
@@ -262,10 +262,10 @@ exports.profile = function(req, res, next) {
 
 /**
  * GET
- * Shows the request bits page
+ * Shows the request SHIDOs page
  * Restricted API to logged users
  **/
-exports.request = function(req, res) {
+exports.request = function (req, res) {
     var user = req.user; //Login var
     assert(user);
 
@@ -277,15 +277,15 @@ exports.request = function(req, res) {
  * Process the give away requests
  * Restricted API to logged users
  **/
-exports.giveawayRequest = function(req, res, next) {
+exports.giveawayRequest = function (req, res, next) {
     var user = req.user;
     assert(user);
 
-    database.addGiveaway(user.id, function(err) {
+    database.addGiveaway(user.id, function (err) {
         if (err) {
             if (err.message === 'NOT_ELIGIBLE') {
                 return res.render('request', { user: user, warning: 'You have to wait ' + err.time + ' minutes for your next give away.' });
-            } else if(err === 'USER_DOES_NOT_EXIST') {
+            } else if (err === 'USER_DOES_NOT_EXIST') {
                 return res.render('error', { error: 'User does not exist.' });
             }
 
@@ -303,29 +303,29 @@ exports.giveawayRequest = function(req, res, next) {
  * Restricted API
  * Shows the account page, the default account page.
  **/
-exports.account = function(req, res, next) {
+exports.account = function (req, res, next) {
     var user = req.user;
     assert(user);
 
     var tasks = [
-        function(callback) {
+        function (callback) {
             database.getDepositsAmount(user.id, callback);
         },
-        function(callback) {
+        function (callback) {
             database.getWithdrawalsAmount(user.id, callback);
         },
-        function(callback) {
+        function (callback) {
             database.getGiveAwaysAmount(user.id, callback);
         },
-        function(callback) {
+        function (callback) {
             database.getUserNetProfit(user.id, callback)
         },
-        function(callback) {
+        function (callback) {
             database.getUserWallet(user.id, callback)
         }
     ];
 
-    async.parallel(tasks, function(err, ret) {
+    async.parallel(tasks, function (err, ret) {
         if (err)
             return next(new Error('Unable to get account info: \n' + err));
 
@@ -350,7 +350,7 @@ exports.account = function(req, res, next) {
  * Restricted API
  * Change the user's password
  **/
-exports.resetPassword = function(req, res, next) {
+exports.resetPassword = function (req, res, next) {
     var user = req.user;
     assert(user);
     var password = lib.removeNullsAndTrim(req.body.old_password);
@@ -360,32 +360,32 @@ exports.resetPassword = function(req, res, next) {
     var ipAddress = req.ip;
     var userAgent = req.get('user-agent');
 
-    if (!password) return  res.redirect('/security?err=Enter%20your%20old%20password');
+    if (!password) return res.redirect('/security?err=Enter%20your%20old%20password');
 
     var notValid = lib.isInvalidPassword(newPassword);
     if (notValid) return res.redirect('/security?err=new%20password%20not%20valid:' + notValid);
 
-    if (newPassword !== confirm) return  res.redirect('/security?err=new%20password%20and%20confirmation%20should%20be%20the%20same.');
+    if (newPassword !== confirm) return res.redirect('/security?err=new%20password%20and%20confirmation%20should%20be%20the%20same.');
 
-    database.validateUser(user.username, password, otp, function(err, userId) {
+    database.validateUser(user.username, password, otp, function (err, userId) {
         if (err) {
-            if (err  === 'WRONG_PASSWORD') return  res.redirect('/security?err=wrong password.');
+            if (err === 'WRONG_PASSWORD') return res.redirect('/security?err=wrong password.');
             if (err === 'INVALID_OTP') return res.redirect('/security?err=invalid one-time password.');
             //Should be an user here
             return next(new Error('Unable to reset password: \n' + err));
         }
         assert(userId === user.id);
-        database.changeUserPassword(user.id, newPassword, function(err) {
+        database.changeUserPassword(user.id, newPassword, function (err) {
             if (err)
-                return next(new Error('Unable to change user password: \n' +  err));
+                return next(new Error('Unable to change user password: \n' + err));
 
-            database.expireSessionsByUserId(user.id, function(err) {
+            database.expireSessionsByUserId(user.id, function (err) {
                 if (err)
                     return next(new Error('Unable to delete user sessions for userId: ' + user.id + ': \n' + err));
 
-                database.createSession(user.id, ipAddress, userAgent, false, null, function(err, sessionId) {
+                database.createSession(user.id, ipAddress, userAgent, false, null, function (err, sessionId) {
                     if (err)
-                        return next(new Error('Unable to create session for userid ' + userId +  ':\n' + err));
+                        return next(new Error('Unable to create session for userid ' + userId + ':\n' + err));
 
                     res.cookie('id', sessionId, sessionOptions);
                     res.redirect('/security?m=Password changed');
@@ -400,8 +400,8 @@ exports.resetPassword = function(req, res, next) {
  * Restricted API
  * Adds an email to the account
  **/
-exports.editEmail = function(req, res, next) {
-    var user  = req.user;
+exports.editEmail = function (req, res, next) {
+    var user = req.user;
     assert(user);
 
     var email = lib.removeNullsAndTrim(req.body.email);
@@ -409,7 +409,7 @@ exports.editEmail = function(req, res, next) {
     var otp = lib.removeNullsAndTrim(req.body.otp);
 
     //If no email set to null
-    if(email.length === 0) {
+    if (email.length === 0) {
         email = null;
     } else {
         var notValid = lib.isInvalidEmail(email);
@@ -419,7 +419,7 @@ exports.editEmail = function(req, res, next) {
     notValid = lib.isInvalidPassword(password);
     if (notValid) return res.redirect('/security?err=password not valid because: ' + notValid);
 
-    database.validateUser(user.username, password, otp, function(err, userId) {
+    database.validateUser(user.username, password, otp, function (err, userId) {
         if (err) {
             if (err === 'WRONG_PASSWORD') return res.redirect('/security?err=wrong%20password');
             if (err === 'INVALID_OTP') return res.redirect('/security?err=invalid%20one-time%20password');
@@ -427,7 +427,7 @@ exports.editEmail = function(req, res, next) {
             return next(new Error('Unable to validate user adding email: \n' + err));
         }
 
-        database.updateEmail(userId, email, function(err) {
+        database.updateEmail(userId, email, function (err) {
             if (err)
                 return next(new Error('Unable to update email: \n' + err));
 
@@ -441,7 +441,7 @@ exports.editEmail = function(req, res, next) {
  * Restricted API
  * Shows the security page of the users account
  **/
-exports.security = function(req, res) {
+exports.security = function (req, res) {
     var user = req.user;
     assert(user);
 
@@ -460,7 +460,7 @@ exports.security = function(req, res) {
  * Restricted API
  * Enables the two factor authentication
  **/
-exports.enableMfa = function(req, res, next) {
+exports.enableMfa = function (req, res, next) {
     var user = req.user;
     assert(user);
 
@@ -481,13 +481,13 @@ exports.enableMfa = function(req, res, next) {
     if (otp !== expected) {
         user.mfa_potential_secret = secret;
         var qrUri = 'otpauth://totp/bustabit:' + user.username + '?secret=' + secret + '&issuer=bustabit';
-        user.qr_svg = qr.imageSync(qrUri, {type: 'svg'});
+        user.qr_svg = qr.imageSync(qrUri, { type: 'svg' });
         user.sig = sig;
 
         return res.render('security', { user: user, warning: 'Invalid 2FA token' });
     }
 
-    database.updateMfa(user.id, secret, function(err) {
+    database.updateMfa(user.id, secret, function (err) {
         if (err) return next(new Error('Unable to update 2FA status: \n' + err));
         res.redirect('/security?=m=Two-Factor%20Authentication%20Enabled');
     });
@@ -498,7 +498,7 @@ exports.enableMfa = function(req, res, next) {
  * Restricted API
  * Disables the two factor authentication
  **/
-exports.disableMfa = function(req, res, next) {
+exports.disableMfa = function (req, res, next) {
     var user = req.user;
     assert(user);
 
@@ -514,7 +514,7 @@ exports.disableMfa = function(req, res, next) {
     if (otp !== expected)
         return res.redirect('/security?err=invalid%20one-time%20password');
 
-    database.updateMfa(user.id, null, function(err) {
+    database.updateMfa(user.id, null, function (err) {
         if (err) return next(new Error('Error updating Mfa: \n' + err));
 
         res.redirect('/security?=m=Two-Factor%20Authentication%20Disabled');
@@ -526,7 +526,7 @@ exports.disableMfa = function(req, res, next) {
  * Public API
  * Send password recovery to an user if possible
  **/
-exports.sendPasswordRecover = function(req, res, next) {
+exports.sendPasswordRecover = function (req, res, next) {
     var email = lib.removeNullsAndTrim(req.body.email);
     if (!email) return res.redirect('forgot-password');
     var remoteIpAddress = req.ip;
@@ -534,34 +534,34 @@ exports.sendPasswordRecover = function(req, res, next) {
     //We don't want to leak if the email has users, so we send this message even if there are no users from that email
     var messageSent = { success: 'We\'ve sent an email to you if there is a recovery email.' };
 
-    database.getUsersFromEmail(email, function(err, users) {
-        if(err) {
-            if(err === 'NO_USERS')
+    database.getUsersFromEmail(email, function (err, users) {
+        if (err) {
+            if (err === 'NO_USERS')
                 return res.render('forgot-password', messageSent);
             else
-                return next(new Error('Unable to get users by email ' + email +  ': \n' + err));
+                return next(new Error('Unable to get users by email ' + email + ': \n' + err));
         }
 
         var recoveryList = []; //An array of pairs [username, recoveryId]
-        async.each(users, function(user, callback) {
+        async.each(users, function (user, callback) {
 
-            database.addRecoverId(user.id, remoteIpAddress, function(err, recoveryId) {
-                if(err)
+            database.addRecoverId(user.id, remoteIpAddress, function (err, recoveryId) {
+                if (err)
                     return callback(err);
 
                 recoveryList.push([user.username, recoveryId]);
                 callback(); //async success
             })
 
-        }, function(err) {
-            if(err)
+        }, function (err) {
+            if (err)
                 return next(new Error('Unable to add recovery id :\n' + err));
 
-            sendEmail.passwordReset(email, recoveryList, function(err) {
-                if(err)
+            sendEmail.passwordReset(email, recoveryList, function (err) {
+                if (err)
                     return next(new Error('Unable to send password email: \n' + err));
 
-                return res.render('forgot-password',  messageSent);
+                return res.render('forgot-password', messageSent);
             });
         });
 
@@ -574,12 +574,12 @@ exports.sendPasswordRecover = function(req, res, next) {
  * Validate if the reset id is valid or is has not being uses, does not alters the recovery state
  * Renders the change password
  **/
-exports.validateResetPassword = function(req, res, next) {
+exports.validateResetPassword = function (req, res, next) {
     var recoverId = req.params.recoverId;
     if (!recoverId || !lib.isUUIDv4(recoverId))
         return next('Invalid recovery id');
 
-    database.getUserByValidRecoverId(recoverId, function(err, user) {
+    database.getUserByValidRecoverId(recoverId, function (err, user) {
         if (err) {
             if (err === 'NOT_VALID_RECOVER_ID')
                 return next('Invalid recovery id');
@@ -594,7 +594,7 @@ exports.validateResetPassword = function(req, res, next) {
  * Public API
  * Receives the new password for the recovery and change it
  **/
-exports.resetPasswordRecovery = function(req, res, next) {
+exports.resetPasswordRecovery = function (req, res, next) {
     var recoverId = req.body.recover_id;
     var password = lib.removeNullsAndTrim(req.body.password);
     var ipAddress = req.ip;
@@ -605,13 +605,13 @@ exports.resetPasswordRecovery = function(req, res, next) {
     var notValid = lib.isInvalidPassword(password);
     if (notValid) return res.render('reset-password', { recoverId: recoverId, warning: 'password not valid because: ' + notValid });
 
-    database.changePasswordFromRecoverId(recoverId, password, function(err, user) {
+    database.changePasswordFromRecoverId(recoverId, password, function (err, user) {
         if (err) {
             if (err === 'NOT_VALID_RECOVER_ID')
                 return next('Invalid recovery id');
             return next(new Error('Unable to change password for recoverId ' + recoverId + ', password: ' + password + '\n' + err));
         }
-        database.createSession(user.id, ipAddress, userAgent, false, null, function(err, sessionId) {
+        database.createSession(user.id, ipAddress, userAgent, false, null, function (err, sessionId) {
             if (err)
                 return next(new Error('Unable to create session for password from recover id: \n' + err));
 
@@ -626,48 +626,48 @@ exports.resetPasswordRecovery = function(req, res, next) {
  * Restricted API
  * Shows the deposit history
  **/
-exports.deposit = function(req, res, next) {
+exports.deposit = function (req, res, next) {
     var user = req.user;
     assert(user);
 
-    database.getDeposits(user.id, function(err, deposits, wallet) {
+    database.getDeposits(user.id, function (err, deposits, wallet) {
         if (err) {
             return next(new Error('Unable to get deposits: \n' + err));
         }
         user.deposits = deposits;
         //user.deposit_address = lib.deriveAddress(user.id);
         user.deposit_address = wallet.wallet_address;
-        res.render('deposit', { user:  user });
+        res.render('deposit', { user: user });
     });
 };
 
 
- /**
-  * GET
-  * Restricted API
-  * Shows the transfer history
-  **/
-exports.transfer = function(req, res, next) {
-  var user = req.user;
-  assert(user);
+/**
+ * GET
+ * Restricted API
+ * Shows the transfer history
+ **/
+exports.transfer = function (req, res, next) {
+    var user = req.user;
+    assert(user);
 
-  var success = (req.query.m === 'success') ? 'Transfer has been made' : undefined;
+    var success = (req.query.m === 'success') ? 'Transfer has been made' : undefined;
 
 
-  database.getTransfers(user.id, function(err, transfers) {
-      if (err)
-          return next(new Error('Unable to get transfers: ' + err));
+    database.getTransfers(user.id, function (err, transfers) {
+        if (err)
+            return next(new Error('Unable to get transfers: ' + err));
 
-      res.render('transfer', { user: user, transfers: transfers, success: success });
-  });
+        res.render('transfer', { user: user, transfers: transfers, success: success });
+    });
 };
 
-exports.transferJson = function(req, res, next) {
+exports.transferJson = function (req, res, next) {
     var user = req.user;
     assert(user);
 
 
-    database.getTransfers(user.id, function(err, transfers) {
+    database.getTransfers(user.id, function (err, transfers) {
         if (err)
             return next(new Error('Unable to get transfers: ' + err));
 
@@ -675,48 +675,48 @@ exports.transferJson = function(req, res, next) {
     });
 };
 
-  /**
-   * GET
-   * Restricted API
-   * Shows the transfer request page
-   **/
+/**
+ * GET
+ * Restricted API
+ * Shows the transfer request page
+ **/
 
-exports.transferRequest = function(req, res) {
+exports.transferRequest = function (req, res) {
     assert(req.user);
     res.render('transfer-request', { user: req.user, id: uuid.v4() });
 };
 
 
- /**
-  * GET
-  * Restricted API
-  * Process a transfer (tip)
-  **/
+/**
+ * GET
+ * Restricted API
+ * Process a transfer (tip)
+ **/
 
- exports.handleTransferRequest = function (req,res,next){
-     var user = req.user;
-     assert(user);
-     var uid = req.body['transfer-id'];
-     var amount = lib.removeNullsAndTrim(req.body.amount);
-     var toUserName = lib.removeNullsAndTrim(req.body['to-user']);
-     var password = lib.removeNullsAndTrim(req.body.password);
-     var otp = lib.removeNullsAndTrim(req.body.otp);
-     var r =  /^[1-9]\d*(\.\d{0,2})?$/;
-     if (!r.test(amount))
-         return res.render('transfer-request', { user: user, id: uuid.v4(),  warning: 'Not a valid amount' });
+exports.handleTransferRequest = function (req, res, next) {
+    var user = req.user;
+    assert(user);
+    var uid = req.body['transfer-id'];
+    var amount = lib.removeNullsAndTrim(req.body.amount);
+    var toUserName = lib.removeNullsAndTrim(req.body['to-user']);
+    var password = lib.removeNullsAndTrim(req.body.password);
+    var otp = lib.removeNullsAndTrim(req.body.otp);
+    var r = /^[1-9]\d*(\.\d{0,2})?$/;
+    if (!r.test(amount))
+        return res.render('transfer-request', { user: user, id: uuid.v4(), warning: 'Not a valid amount' });
     amount = Math.round(parseFloat(amount) * 100);
 
-     if (amount < 10000)
-        return res.render('transfer-request', { user: user, id: uuid.v4(),  warning: 'Must transfer at least 100 bits' });
+    if (amount < 10000)
+        return res.render('transfer-request', { user: user, id: uuid.v4(), warning: 'Must transfer at least 100 SHIDOs' });
 
     if (!password)
-        return res.render('transfer-request', { user: user,  id: uuid.v4(), warning: 'Must enter a password'});
+        return res.render('transfer-request', { user: user, id: uuid.v4(), warning: 'Must enter a password' });
 
     if (user.username.toLowerCase() === toUserName.toLowerCase()) {
-        return res.render('transfer-request', { user: user,  id: uuid.v4(), warning: 'Can\'t send money to yourself'});
+        return res.render('transfer-request', { user: user, id: uuid.v4(), warning: 'Can\'t send money to yourself' });
     }
 
-    database.validateUser(user.username, password, otp, function(err) {
+    database.validateUser(user.username, password, otp, function (err) {
 
         if (err) {
             if (err === 'WRONG_PASSWORD')
@@ -726,7 +726,7 @@ exports.transferRequest = function(req, res) {
                     warning: 'wrong password, try it again...'
                 });
             if (err === 'INVALID_OTP')
-                return res.render('transfer-request', {user: user, id: uuid.v4(), warning: 'invalid one-time token'});
+                return res.render('transfer-request', { user: user, id: uuid.v4(), warning: 'invalid one-time token' });
             //Should be an user
             return next(new Error('Unable to validate user handling transfer: ' + err));
         }
@@ -735,37 +735,37 @@ exports.transferRequest = function(req, res) {
         database.makeTransfer(uid, user.id, toUserName, amount, function (err) {
             if (err) {
                 if (err === 'NOT_ENOUGH_BALANCE')
-                    return res.render('transfer-request', {user: user, id: uuid.v4(), warning: 'Not enough balance for transfer'});
+                    return res.render('transfer-request', { user: user, id: uuid.v4(), warning: 'Not enough balance for transfer' });
                 if (err === 'USER_NOT_EXIST')
-                    return res.render('transfer-request', {user: user, id: uuid.v4(), warning: 'Could not find user'});
+                    return res.render('transfer-request', { user: user, id: uuid.v4(), warning: 'Could not find user' });
                 if (err === 'TRANSFER_ALREADY_MADE')
-                    return res.render('transfer-request', {user: user, id: uuid.v4(), warning: 'You already submitted this'});
+                    return res.render('transfer-request', { user: user, id: uuid.v4(), warning: 'You already submitted this' });
 
                 console.error('[INTERNAL_ERROR] could not make transfer: ', err);
-                return res.render('transfer-request', {user: user, id: uuid.v4(), warning: 'Could not make transfer'});
+                return res.render('transfer-request', { user: user, id: uuid.v4(), warning: 'Could not make transfer' });
             }
 
             return res.redirect('/transfer?m=success');
         });
     });
 
- };
+};
 
 /**
  * GET
  * Restricted API
  * Shows the withdrawal history
  **/
-exports.withdraw = function(req, res, next) {
+exports.withdraw = function (req, res, next) {
     var user = req.user;
     assert(user);
 
-    database.getWithdrawals(user.id, function(err, withdrawals) {
+    database.getWithdrawals(user.id, function (err, withdrawals) {
         if (err)
             return next(new Error('Unable to get withdrawals: \n' + err));
 
-        withdrawals.forEach(function(withdrawal) {
-            withdrawal.shortDestination = withdrawal.destination.substring(0,8);
+        withdrawals.forEach(function (withdrawal) {
+            withdrawal.shortDestination = withdrawal.destination.substring(0, 8);
         });
         user.withdrawals = withdrawals;
 
@@ -778,7 +778,7 @@ exports.withdraw = function(req, res, next) {
  * Restricted API
  * Process a withdrawal
  **/
-exports.handleWithdrawRequest = function(req, res, next) {
+exports.handleWithdrawRequest = function (req, res, next) {
     var user = req.user;
     assert(user);
 
@@ -789,9 +789,9 @@ exports.handleWithdrawRequest = function(req, res, next) {
     var otp = lib.removeNullsAndTrim(req.body.otp);
     var fp = lib.removeNullsAndTrim(req.body.fp);
 
-    var r =  /^[1-9]\d*(\.\d{0,2})?$/;
+    var r = /^[1-9]\d*(\.\d{0,2})?$/;
     if (!r.test(amount))
-        return res.render('withdraw-request', { user: user, id: uuid.v4(),  warning: 'Not a valid amount' });
+        return res.render('withdraw-request', { user: user, id: uuid.v4(), warning: 'Not a valid amount' });
 
     amount = Math.round(parseFloat(amount) * 100);
     assert(Number.isFinite(amount));
@@ -799,26 +799,26 @@ exports.handleWithdrawRequest = function(req, res, next) {
     var minWithdraw = config.MINING_FEE + 10000;
 
     if (amount < minWithdraw)
-        return res.render('withdraw-request', { user: user,  id: uuid.v4(), warning: 'You must withdraw ' + minWithdraw + ' or more'  });
+        return res.render('withdraw-request', { user: user, id: uuid.v4(), warning: 'You must withdraw ' + minWithdraw + ' or more' });
 
     if (typeof destination !== 'string')
-        return res.render('withdraw-request', { user: user,  id: uuid.v4(), warning: 'Destination address not provided' });
+        return res.render('withdraw-request', { user: user, id: uuid.v4(), warning: 'Destination address not provided' });
 
     try {
         var version = bitcoinjs.address.fromBase58Check(destination).version;
         if (version !== bitcoinjs.networks.bitcoin.pubKeyHash && version !== bitcoinjs.networks.bitcoin.scriptHash)
-            return res.render('withdraw-request', { user: user,  id: uuid.v4(), warning: 'Destination address is not a bitcoin one' });
-    } catch(ex) {
-        return res.render('withdraw-request', { user: user,  id: uuid.v4(), warning: 'Not a valid destination address' });
+            return res.render('withdraw-request', { user: user, id: uuid.v4(), warning: 'Destination address is not a bitcoin one' });
+    } catch (ex) {
+        return res.render('withdraw-request', { user: user, id: uuid.v4(), warning: 'Not a valid destination address' });
     }
 
     if (!password)
-        return res.render('withdraw-request', { user: user,  id: uuid.v4(), warning: 'Must enter a password' });
+        return res.render('withdraw-request', { user: user, id: uuid.v4(), warning: 'Must enter a password' });
 
-    if(!lib.isUUIDv4(withdrawalId))
-      return res.render('withdraw-request', { user: user,  id: uuid.v4(), warning: 'Could not find a one-time token' });
+    if (!lib.isUUIDv4(withdrawalId))
+        return res.render('withdraw-request', { user: user, id: uuid.v4(), warning: 'Could not find a one-time token' });
 
-    database.validateUser(user.username, password, otp, function(err) {
+    database.validateUser(user.username, password, otp, function (err) {
 
         if (err) {
             if (err === 'WRONG_PASSWORD')
@@ -829,16 +829,16 @@ exports.handleWithdrawRequest = function(req, res, next) {
             return next(new Error('Unable to validate user handling withdrawal: \n' + err));
         }
 
-        withdraw(req.user.id, amount, destination, withdrawalId, fp, function(err) {
+        withdraw(req.user.id, amount, destination, withdrawalId, fp, function (err) {
             if (err) {
                 if (err === 'NOT_ENOUGH_MONEY')
                     return res.render('withdraw-request', { user: user, id: uuid.v4(), warning: 'Not enough money to process withdraw.' });
                 else if (err === 'PENDING')
-                    return res.render('withdraw-request', { user: user,  id: uuid.v4(), success: 'Withdrawal successful, however hot wallet was empty. Withdrawal will be sent ASAP' });
-                else if(err === 'SAME_WITHDRAWAL_ID')
-                    return res.render('withdraw-request', { user: user,  id: uuid.v4(), warning: 'Please reload your page, it looks like you tried to make the same transaction twice.' });
-                else if(err === 'FUNDING_QUEUED')
-                    return res.render('withdraw-request', { user: user,  id: uuid.v4(), success: 'Your transaction is being processed come back later to see the status.' });
+                    return res.render('withdraw-request', { user: user, id: uuid.v4(), success: 'Withdrawal successful, however hot wallet was empty. Withdrawal will be sent ASAP' });
+                else if (err === 'SAME_WITHDRAWAL_ID')
+                    return res.render('withdraw-request', { user: user, id: uuid.v4(), warning: 'Please reload your page, it looks like you tried to make the same transaction twice.' });
+                else if (err === 'FUNDING_QUEUED')
+                    return res.render('withdraw-request', { user: user, id: uuid.v4(), success: 'Your transaction is being processed come back later to see the status.' });
                 else
                     return next(new Error('Unable to withdraw: ' + err));
             }
@@ -852,7 +852,7 @@ exports.handleWithdrawRequest = function(req, res, next) {
  * Restricted API
  * Shows the withdrawal request page
  **/
-exports.withdrawRequest = function(req, res) {
+exports.withdrawRequest = function (req, res) {
     assert(req.user);
     res.render('withdraw-request', { user: req.user, id: uuid.v4() });
 };
@@ -862,7 +862,7 @@ exports.withdrawRequest = function(req, res) {
  * Restricted API
  * Shows the support page
  **/
-exports.contact = function(req, res) {
+exports.contact = function (req, res) {
     assert(req.user);
     res.render('support', { user: req.user })
 };
@@ -872,15 +872,15 @@ exports.contact = function(req, res) {
  * Public API
  * Returns an array of usernames or null
  **/
-exports.getUsernamesByPrefix = function(req, res, next) {
+exports.getUsernamesByPrefix = function (req, res, next) {
     var prefix = req.params.prefix;
 
     //Validate prefix
-    if(lib.isInvalidUsername(prefix))
+    if (lib.isInvalidUsername(prefix))
         return res.status(400).send('INVALID_PREFIX');
 
-    database.getUsernamesByPrefix(prefix, function(err, usernames) {
-        if(err) {
+    database.getUsernamesByPrefix(prefix, function (err, usernames) {
+        if (err) {
             console.error('[INTERNAL_ERROR] unable to request usernames by prefix: ', usernames);
             return res.status(500).send('INTERNAL_ERROR');
         }

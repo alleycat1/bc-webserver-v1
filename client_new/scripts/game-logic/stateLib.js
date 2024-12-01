@@ -3,7 +3,7 @@
 define([
     'constants/AppConstants',
     'game-logic/clib'
-], function(
+], function (
     AppConstants,
     Clib
 ) {
@@ -13,7 +13,7 @@ define([
 
 
         /** If the user is currently playing return and object with the status else null **/
-        currentPlay: function(engine) {
+        currentPlay: function (engine) {
             if (!engine.username)
                 return null;
             else
@@ -21,7 +21,7 @@ define([
         },
 
         /** True if you are playing and haven't cashed out, it returns true on game_crash also, it clears until game_starting **/
-        currentlyPlaying: function(engine) {
+        currentlyPlaying: function (engine) {
             var currentPlay = this.currentPlay(engine);
             return currentPlay && currentPlay.bet && !currentPlay.stopped_at;
         },
@@ -41,12 +41,12 @@ define([
          * Use it for render, strategy, etc.
          * @return {number}
          */
-        getGamePayout: function(engine) {
-            if(!(engine.gameState === 'IN_PROGRESS'))
+        getGamePayout: function (engine) {
+            if (!(engine.gameState === 'IN_PROGRESS'))
                 return null;
 
             var elapsed;
-            if((Date.now() - engine.lastGameTick) < AppConstants.Engine.STOP_PREDICTING_LAPSE) {
+            if ((Date.now() - engine.lastGameTick) < AppConstants.Engine.STOP_PREDICTING_LAPSE) {
                 elapsed = Date.now() - engine.startTime;
             } else {
                 elapsed = engine.lastGameTick - engine.startTime + AppConstants.Engine.STOP_PREDICTING_LAPSE; //+ STOP_PREDICTING_LAPSE because it looks better
@@ -57,16 +57,16 @@ define([
         },
 
         /** True if are not playing in the current game or already cashed out */
-        notPlaying: function(engine) {
+        notPlaying: function (engine) {
             var currentPlay = this.currentPlay(engine);
             return !(engine.gameState === 'IN_PROGRESS' && currentPlay && !currentPlay.stopped_at);
         },
 
         /** To Know if the user is betting **/
-        isBetting : function(engine) {
+        isBetting: function (engine) {
             if (!engine.username) return false;
             if (engine.nextBetAmount) return true;
-            for (var i = 0 ; i < engine.joined.length; ++i) {
+            for (var i = 0; i < engine.joined.length; ++i) {
                 if (engine.joined[i] == engine.username)
                     return true;
             }
@@ -81,13 +81,13 @@ define([
         /** ====== Controls Store ====== **/
 
 
-        /** Parse the bet string in bits and returns a integer **/
-        parseBet: function(betStringBits) {
-          return parseInt(betStringBits.replace(/k/g, '000')) * 100;
+        /** Parse the bet string in SHIDOs and returns a integer **/
+        parseBet: function (betStringBits) {
+            return parseInt(betStringBits.replace(/k/g, '000')) * 100;
         },
 
         /** Convert the cash out string into an integer **/
-        parseCashOut: function(cashOutString) {
+        parseCashOut: function (cashOutString) {
             var cashOut = parseFloat(cashOutString);
             cashOut = Math.round(cashOut * 100);
             return cashOut;
@@ -96,17 +96,17 @@ define([
 
         /** ====== Mixed ====== **/
 
-        canUserBet: function(balanceSatoshis, betStringBits, betInvalid, autoCashOutInvalid) {
+        canUserBet: function (balanceSatoshis, betStringBits, betInvalid, autoCashOutInvalid) {
             var betAmountSatoshis = this.parseBet(betStringBits);
 
-            if(balanceSatoshis < 100)
-                return new Error('Not enough bits to play');
-            if(betInvalid)
+            if (balanceSatoshis < 100)
+                return new Error('Not enough SHIDOs to play');
+            if (betInvalid)
                 return new Error(betInvalid);
-            if(autoCashOutInvalid)
+            if (autoCashOutInvalid)
                 return new Error(autoCashOutInvalid);
-            if(balanceSatoshis < betAmountSatoshis)
-                return new Error('Not enough bits');
+            if (balanceSatoshis < betAmountSatoshis)
+                return new Error('Not enough SHIDOs');
 
             return true;
         }

@@ -2,11 +2,11 @@ define([
     'lib/react',
     'lib/clib',
     'components/Payout'
-], function(
+], function (
     React,
     Clib,
     PayoutClass
-){
+) {
 
     var Payout = React.createFactory(PayoutClass);
     var D = React.DOM;
@@ -24,18 +24,18 @@ define([
             this.props.cashOut();
         },
 
-        render: function() {
+        render: function () {
 
             if (this.props.engine.cashingOut) {
                 return D.div({ className: 'cash-out' },
                     D.a({ className: 'big-button-disable unclick' },
-                        'Cash out at ', Payout({ engine: this.props.engine }), ' bits'
+                        'Cash out at ', Payout({ engine: this.props.engine }), ' SHIDOs'
                     )
                 );
             } else {
                 return D.div({ className: 'cash-out', onMouseDown: this._cashOut },
                     D.a({ className: 'big-button unclick' },
-                        'Cash out at ', Payout({ engine: this.props.engine }), ' bits'
+                        'Cash out at ', Payout({ engine: this.props.engine }), ' SHIDOs'
                     )
                 );
             }

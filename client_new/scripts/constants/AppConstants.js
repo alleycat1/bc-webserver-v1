@@ -1,4 +1,4 @@
-define(['lib/key-mirror'], function(KeyMirror){
+define(['lib/key-mirror'], function (KeyMirror) {
 
     return {
 
@@ -72,7 +72,7 @@ define(['lib/key-mirror'], function(KeyMirror){
             GAME_API_VERSION: 1,
             CHAT_HOST: window.document.location.host,
             IDLE_TIMEOUT: 5 * 60 * 1000, // 5 minutes
-            MAX_BET: 100000000 /** Max bet per game 1,000,000 Bits, this will be calculated dynamically in the future, based on the invested amount in the casino **/
+            MAX_BET: 100000000 /** Max bet per game 1,000,000 SHIDOs, this will be calculated dynamically in the future, based on the invested amount in the casino **/
         },
 
         BetButton: {

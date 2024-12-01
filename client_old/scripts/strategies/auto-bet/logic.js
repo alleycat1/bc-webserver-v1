@@ -1,4 +1,4 @@
-define(['lib/clib'], function(Clib){
+define(['lib/clib'], function (Clib) {
 
     return function (settings) {
         console.assert(settings);
@@ -6,7 +6,7 @@ define(['lib/clib'], function(Clib){
         /**
          * Initial conditions object
          *  @param {object} settings
-         *  @param {number} settings.baseBet - Base bet in bits
+         *  @param {number} settings.baseBet - Base bet in SHIDOs
          *  @param {number} settings.autoCashAt
          *  @param {string} settings.onLossSelectedOpt - Options: return_to_base(def), increase_bet_by
          *  @param {number/null} settings.onLossIncreaseQty
@@ -14,7 +14,7 @@ define(['lib/clib'], function(Clib){
          *  @param {number/null} settings.onWinIncreaseQty
          **/
 
-        return function(engine) {
+        return function (engine) {
             //MoneyBot\n\
             var baseBetSatoshis = settings.baseBet * 100;
             var currentBet = baseBetSatoshis;
@@ -26,18 +26,18 @@ define(['lib/clib'], function(Clib){
 
             console.assert(Clib.isNumber(autoCashAt));
 
-            engine.on('game_starting', function() {
+            engine.on('game_starting', function () {
                 var lastGamePlay = engine.lastGamePlay();
 
                 if (lastGamePlay == 'LOST') {
-                    if(settings.onLossSelectedOpt == 'return_to_base')
+                    if (settings.onLossSelectedOpt == 'return_to_base')
                         currentBet = baseBetSatoshis;
                     else { //increase_bet_by
                         console.assert(Clib.isNumber(onLossIncreaseQty));
                         currentBet = currentBet * onLossIncreaseQty;
                     }
-                } else if(lastGamePlay == 'WON') {
-                    if(settings.onWinSelectedOpt == 'return_to_base')
+                } else if (lastGamePlay == 'WON') {
+                    if (settings.onWinSelectedOpt == 'return_to_base')
                         currentBet = baseBetSatoshis;
                     else {//increase_bet_by
                         console.assert(Clib.isNumber(onWinIncreaseQty));
@@ -47,11 +47,11 @@ define(['lib/clib'], function(Clib){
 
                 var fixedCurrentBet = Math.round(currentBet / 100) * 100;
 
-                if(fixedCurrentBet > 0 && fixedCurrentBet <= engine.getBalance() && fixedCurrentBet <= engine.getMaxBet() && fixedCurrentBet <= maxBetStop) {
+                if (fixedCurrentBet > 0 && fixedCurrentBet <= engine.getBalance() && fixedCurrentBet <= engine.getMaxBet() && fixedCurrentBet <= maxBetStop) {
                     engine.placeBet(fixedCurrentBet, Math.round(autoCashAt * 100), false);
                 } else {
                     engine.stop();
-                    console.log('You ran out of bits or exceeded the max bet or betting nothing :(');
+                    console.log('You ran out of SHIDOs or exceeded the max bet or betting nothing :(');
                 }
             });
         }

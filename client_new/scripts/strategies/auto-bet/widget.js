@@ -3,10 +3,10 @@
 define([
     'react',
     'lib/react-radio'
-], function(
+], function (
     React,
     ReactRadioClass
-){
+) {
 
     var ReactRadio = React.createFactory(ReactRadioClass);
     var D = React.DOM;
@@ -19,67 +19,67 @@ define([
             StrategyEditorActions: React.PropTypes.object.isRequired
         },
 
-        getState: function() {
+        getState: function () {
             var state = this.props.StrategyEditorStore.getWidgetState();
             state.active = this.props.StrategyEditorStore.getEditorState();
             return state;
         },
 
-        getInitialState: function() {
+        getInitialState: function () {
             return this.getState();
         },
 
-        componentDidMount: function() {
+        componentDidMount: function () {
             this.props.StrategyEditorStore.addWidgetChangeListener(this._onChange);
         },
 
-        componentWillUnmount: function() {
+        componentWillUnmount: function () {
             this.props.StrategyEditorStore.removeWidgetChangeListener(this._onChange);
         },
 
-        _onChange: function() {
+        _onChange: function () {
             this.setState(this.getState());
         },
 
-        updateOnLoss: function(opt) {
+        updateOnLoss: function (opt) {
             this.props.StrategyEditorActions.setWidgetState('onLossSelectedOpt', opt);
         },
 
-        updateOnWin: function(opt) {
+        updateOnWin: function (opt) {
             this.props.StrategyEditorActions.setWidgetState('onWinSelectedOpt', opt);
         },
 
-        updateBetAmount: function() {
+        updateBetAmount: function () {
             var amount = this.refs.bet_amount.value;
             this.props.StrategyEditorActions.setWidgetState('baseBet', amount);
         },
 
-        updateAutoCashAt: function() {
+        updateAutoCashAt: function () {
             var amount = this.refs.auto_cash_at.value;
             this.props.StrategyEditorActions.setWidgetState('autoCashAt', amount);
         },
 
-        updateOnLossQty: function() {
+        updateOnLossQty: function () {
             var amount = this.refs.onLossQty.value;
             this.props.StrategyEditorActions.setWidgetState('onLossIncreaseQty', amount);
         },
 
-        updateOnWinQty: function() {
+        updateOnWinQty: function () {
             var amount = this.refs.onWinQty.value;
             this.props.StrategyEditorActions.setWidgetState('onWinIncreaseQty', amount);
         },
 
-        updateMaxBetStop: function() {
+        updateMaxBetStop: function () {
             var amount = this.refs.max_bet_stop.value;
             this.props.StrategyEditorActions.setWidgetState('maxBetStop', amount);
         },
 
-        render: function() {
+        render: function () {
             return D.div({ className: 'auto-bet-container' },
                 D.div({ className: 'stra-base-bet' },
                     D.span({ className: 'bet-title' }, 'Base Bet: '),
                     D.input({ type: 'text', ref: 'bet_amount', onChange: this.updateBetAmount, value: this.state.baseBet, disabled: this.state.active }),
-                    D.span(null, 'Bits')
+                    D.span(null, 'SHIDOs')
                 ),
                 D.div({ className: 'stra-cash-out-at' },
                     D.span({ className: 'bet-title' }, 'Auto Cashout at:'),
@@ -89,32 +89,33 @@ define([
                 D.div({ className: 'stra-max-bet-stop' },
                     D.span({ className: 'bet-title' }, 'Stop if bet is > '),
                     D.input({ type: 'text', ref: 'max_bet_stop', onChange: this.updateMaxBetStop, value: this.state.maxBetStop, disabled: this.state.active }),
-                    D.span(null, 'Bits')
+                    D.span(null, 'SHIDOs')
                 ),
                 D.div({ className: 'stra-on-loss' },
                     D.span({ className: 'bet-title' }, 'On loss:'),
-                    ReactRadio({ name: 'onLoss', onChange: this.updateOnLoss, defaultValue: this.state.onLossSelectedOpt  },
+                    ReactRadio({ name: 'onLoss', onChange: this.updateOnLoss, defaultValue: this.state.onLossSelectedOpt },
                         D.input({
-                                type: 'radio',
-                                className: 'stra-on-loss-return-to-base-radio',
-                                value: 'return_to_base',
-                                disabled: this.state.active
+                            type: 'radio',
+                            className: 'stra-on-loss-return-to-base-radio',
+                            value: 'return_to_base',
+                            disabled: this.state.active
                         }),
                         D.span(null, 'Return to base bet'),
                         D.br(),
                         D.input({
-                                type: 'radio',
-                                className: 'stra-on-loss-increase-bet-by',
-                                value: 'increase_bet_by',
-                                disabled: this.state.active
+                            type: 'radio',
+                            className: 'stra-on-loss-increase-bet-by',
+                            value: 'increase_bet_by',
+                            disabled: this.state.active
                         }),
                         D.span(null, 'Increase bet by: '),
                         D.input({
-                                type: 'text',
-                                ref: 'onLossQty',
-                                onChange: this.updateOnLossQty,
-                                value: this.state.onLossIncreaseQty,
-                                disabled: this.state.active || this.state.onLossSelectedOpt != 'increase_bet_by' }
+                            type: 'text',
+                            ref: 'onLossQty',
+                            onChange: this.updateOnLossQty,
+                            value: this.state.onLossIncreaseQty,
+                            disabled: this.state.active || this.state.onLossSelectedOpt != 'increase_bet_by'
+                        }
                         ),
                         D.span(null, 'x')
                     )
@@ -123,26 +124,27 @@ define([
                     D.span({ className: 'bet-title' }, 'On win:'),
                     ReactRadio({ name: 'onWin', onChange: this.updateOnWin, defaultValue: this.state.onWinSelectedOpt },
                         D.input({
-                                type: 'radio',
-                                className: 'stra-on-win-return-to-base-radio',
-                                value: 'return_to_base',
-                                disabled: this.state.active
+                            type: 'radio',
+                            className: 'stra-on-win-return-to-base-radio',
+                            value: 'return_to_base',
+                            disabled: this.state.active
                         }),
                         D.span(null, 'Return to base bet'),
                         D.br(),
                         D.input({
-                                type: 'radio',
-                                className: 'stra-on-win-increase_bet_by',
-                                value: 'increase_bet_by',
-                                disabled: this.state.active
+                            type: 'radio',
+                            className: 'stra-on-win-increase_bet_by',
+                            value: 'increase_bet_by',
+                            disabled: this.state.active
                         }),
                         D.span(null, 'Increase bet by: '),
                         D.input({
-                                type: 'text',
-                                ref: 'onWinQty',
-                                onChange: this.updateOnWinQty,
-                                value: this.state.onWinIncreaseQty,
-                                disabled: this.state.active || this.state.onWinSelectedOpt != 'increase_bet_by' }
+                            type: 'text',
+                            ref: 'onWinQty',
+                            onChange: this.updateOnWinQty,
+                            value: this.state.onWinIncreaseQty,
+                            disabled: this.state.active || this.state.onWinSelectedOpt != 'increase_bet_by'
+                        }
                         ),
                         D.span(null, 'x')
                     )

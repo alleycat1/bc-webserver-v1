@@ -69,7 +69,7 @@ define([
             if (this.state.username) {
                 userLogin = D.div({ className: 'user-login' },
                     D.div({ className: 'balance-bits' },
-                        D.span(null, 'Bits: '),
+                        D.span(null, 'SHIDO: '),
                         D.span({ className: 'balance' }, this.state.balanceBitsFormatted)
                     ),
                     D.div({ className: 'username' },
@@ -92,9 +92,9 @@ define([
                     D.a({ href: '/' },
                         D.h1(null, this.props.isMobileOrSmall ? 'SHIDO' : 'SHIDO Rocket Game')
                     ),
-                    // D.a({ href: '/leaderboard' }, D.h3(null, 'Leaderboard')),
-                    // D.a({ href: '/stats' }, D.h3(null, 'Stats')),
-                    // D.a({ href: '/faq' }, D.h3(null, 'Help'))
+                    D.a({ href: '/leaderboard' }, D.h3(null, 'Leaderboard')),
+                    D.a({ href: '/stats' }, D.h3(null, 'Stats')),
+                    D.a({ href: '/faq' }, D.h3(null, 'Help'))
                 ),
                 userLogin,
             )

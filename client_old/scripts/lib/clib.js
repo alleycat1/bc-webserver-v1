@@ -2,19 +2,19 @@ define([
     'lib/seedrandom',
     'lib/lodash',
     'constants/AppConstants'
-], function(
+], function (
     Seedrandom,
     _,
     AppConstants
-){
+) {
 
     var rng;
 
     function formatSatoshis(n, decimals) {
-        return formatDecimals(n/100, decimals);
+        return formatDecimals(n / 100, decimals);
     }
 
-    function formatDecimals (n, decimals) {
+    function formatDecimals(n, decimals) {
         if (typeof decimals === 'undefined') {
             if (n % 100 === 0)
                 decimals = 0;
@@ -29,12 +29,12 @@ define([
 
         formatDecimals: formatDecimals,
 
-        payout: function(betSize, ms) {
-            return betSize * Math.pow(Math.E, (0.00006*ms));
+        payout: function (betSize, ms) {
+            return betSize * Math.pow(Math.E, (0.00006 * ms));
         },
 
         payoutTime: function (betSize, payout) {
-            return Math.log(payout/betSize)/0.00006;
+            return Math.log(payout / betSize) / 0.00006;
         },
 
         seed: function (newSeed) {
@@ -53,7 +53,7 @@ define([
                 return new Error('The bet should be at least 1 bit');
 
             if (bet * 100 > AppConstants.Engine.MAX_BET)
-                return new Error('The bet must be less no more than ' + formatSatoshis(AppConstants.Engine.MAX_BET) + ' bits');
+                return new Error('The bet must be less no more than ' + formatSatoshis(AppConstants.Engine.MAX_BET) + ' SHIDOs');
 
             if (_.isNaN(bet) || Math.floor(bet) !== bet)
                 return new Error('The bet should be an integer greater than or equal to one');
@@ -70,7 +70,7 @@ define([
             co = parseFloat(co);
             console.assert(!_.isNaN(co));
 
-            if(co < 1)
+            if (co < 1)
                 return new Error('The auto cash out amount should be bigger than 1');
 
             return co;
@@ -105,7 +105,7 @@ define([
              = 100/101 * (99 / (factor-1))
              = 9900 / (101*(factor-1))
              */
-            return 9900 / (101*(factor-1));
+            return 9900 / (101 * (factor - 1));
         },
 
         profit: function (amount, cashOut) {
@@ -115,21 +115,21 @@ define([
 
             // We calculate the profit with the factor instead of using the
             // difference between cash out and wager amount.
-            return amount * (factor-100) / 100;
+            return amount * (factor - 100) / 100;
         },
 
         houseExpectedReturn: function (amount, cashOut) {
 
-            var p1,p2,p3;
-            var v1,v2,v3;
+            var p1, p2, p3;
+            var v1, v2, v3;
 
             // Instant crash.
-            p1 = 1/101;
+            p1 = 1 / 101;
             v1 = amount;
 
             // Player win.
-            p2 = this.winProb(amount,cashOut);
-            v2 = - 0.01 * amount - this.profit(amount,cashOut);
+            p2 = this.winProb(amount, cashOut);
+            v2 = - 0.01 * amount - this.profit(amount, cashOut);
 
             // Player loss.
             p3 = 1 - p1 - p2;
@@ -139,8 +139,7 @@ define([
             return p1 * v1 + p2 * v2 + p3 * v3;
         },
 
-        capitaliseFirstLetter: function (string)
-        {
+        capitaliseFirstLetter: function (string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         },
 
@@ -152,30 +151,30 @@ define([
             return typeof nVal === "number" && isFinite(nVal) && nVal > -9007199254740992 && nVal < 9007199254740992;
         },
 
-        //Returns plural or singular, for a given amount of bits.
+        //Returns plural or singular, for a given amount of SHIDOs.
         grammarBits: function (bits) {
-            return bits <= 100 ? 'bit' : 'bits';
+            return bits <= 100 ? 'SHIDO' : 'SHIDOs';
         },
 
         //Calculate the payout based on the time
-        growthFunc: function(ms) {
+        growthFunc: function (ms) {
             console.assert(typeof ms == 'number' && ms >= 0);
             var r = 0.00006;
             return Math.floor(100 * Math.pow(Math.E, r * ms)) / 100;
         },
 
         //A better name
-        calcGamePayout: function(ms) {
+        calcGamePayout: function (ms) {
             var gamePayout = this.growthFunc(ms);
             console.assert(isFinite(gamePayout));
             return gamePayout;
         },
 
         //Returns the current payout and stops when lag, use this time to calc game payout with lag
-        getElapsedTimeWithLag: function(engine) {
-            if(engine.gameState == 'IN_PROGRESS') {
+        getElapsedTimeWithLag: function (engine) {
+            if (engine.gameState == 'IN_PROGRESS') {
                 var elapsed;
-                if(engine.lag)
+                if (engine.lag)
                     elapsed = engine.lastGameTick - engine.startTime + AppConstants.Engine.STOP_PREDICTING_LAPSE; //+ STOP_PREDICTING_LAPSE because it looks better
                 else
                     elapsed = this.getElapsedTime(engine.startTime);
@@ -187,7 +186,7 @@ define([
         },
 
         //Just calculates the elapsed time
-        getElapsedTime: function(startTime) {
+        getElapsedTime: function (startTime) {
             return Date.now() - startTime;
         }
 

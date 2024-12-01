@@ -4,13 +4,13 @@ define([
     'game-logic/stateLib',
     'constants/AppConstants',
     'components/Payout'
-], function(
+], function (
     React,
     Clib,
     StateLib,
     AppConstants,
     PayoutClass
-){
+) {
 
     var D = React.DOM;
     var Payout = React.createFactory(PayoutClass);
@@ -32,39 +32,39 @@ define([
             gameState: React.PropTypes.string.isRequired,
             placingBet: React.PropTypes.bool.isRequired,
             cashingOut: React.PropTypes.bool.isRequired,
-            balanceSatoshis:React.PropTypes.number.isRequired,
+            balanceSatoshis: React.PropTypes.number.isRequired,
             notPlaying: React.PropTypes.bool.isRequired,
             isBetting: React.PropTypes.bool.isRequired
         },
 
-        getInitialState: function() {
+        getInitialState: function () {
             return {
                 initialDisable: true
             };
         },
 
-        componentDidMount: function() {
+        componentDidMount: function () {
             this._initialDisableTimeout();
             this.props.engine.on({
                 game_crash: this._onGameCrash
             });
         },
 
-        componentWillUnmount: function() {
+        componentWillUnmount: function () {
             this.props.engine.off({
                 game_crash: this._onGameCrash
             });
         },
 
-        _onGameCrash: function() {
+        _onGameCrash: function () {
             this.setState({ initialDisable: true });
             this._initialDisableTimeout();
         },
 
-        _initialDisableTimeout: function() {
+        _initialDisableTimeout: function () {
             var self = this;
-            setTimeout(function() {
-                if(self.isMounted())
+            setTimeout(function () {
+                if (self.isMounted())
                     self.setState({ initialDisable: false });
             }, AppConstants.BetButton.INITIAL_DISABLE_TIME);
         },
@@ -75,7 +75,7 @@ define([
             this._initialDisableTimeout();
         },
 
-        render: function() {
+        render: function () {
             var self = this;
 
             var smallButton = this.props.isMobileOrSmall || this.props.controlsSize === 'small';
@@ -89,45 +89,45 @@ define([
             var btnClasses, btnContent = [], onClickFun = null, onMouseDownFun = null, onMouseUpFun = null;
             btnClasses = 'bet-button';
 
-            if(notPlayingOrBetting) {
+            if (notPlayingOrBetting) {
                 //Betting
-                if(this.props.isBetting) {
+                if (this.props.isBetting) {
                     btnClasses += ' disable';
 
                     //Can cancel
                     if (this.props.gameState !== 'STARTING') {
-                        btnContent.push(D.span({ key: 'bc-0'}, smallButton? '' : 'Betting...'), D.a({ className: 'cancel', key: 'bc-1' }, ' (Cancel)'));
+                        btnContent.push(D.span({ key: 'bc-0' }, smallButton ? '' : 'Betting...'), D.a({ className: 'cancel', key: 'bc-1' }, ' (Cancel)'));
                         onClickFun = this.props.cancelBet;
                         btnClasses += ' cancel';
                     } else {
-                        btnContent.push(D.span({ key: 'bc-0'}, 'Betting...'));
+                        btnContent.push(D.span({ key: 'bc-0' }, 'Betting...'));
                     }
 
                     //Initial disable
-                } else if(this.state.initialDisable) {
-                	var btnText =   (canUserBet.message === 'Not enough bits')? (smallButton? 'Bet' : 'Bet too big') : (smallButton? 'Bet' : 'Place bet');
+                } else if (this.state.initialDisable) {
+                    var btnText = (canUserBet.message === 'Not enough SHIDOs') ? (smallButton ? 'Bet' : 'Bet too big') : (smallButton ? 'Bet' : 'Place bet');
                     btnContent.push(D.span({ key: 'bc-2' }, btnText));
                     btnClasses += ' disable unselect';
 
                     //Able to betting
-                } else if(this.props.notPlaying) {
+                } else if (this.props.notPlaying) {
 
                     //Invalid bet
-                    if(invalidBet) {
+                    if (invalidBet) {
 
-                    	var btnText =   (canUserBet.message === 'Not enough bits')? (smallButton? 'Bet' : 'Bet too big') : (smallButton? 'Bet' : 'Place bet');
+                        var btnText = (canUserBet.message === 'Not enough SHIDOs') ? (smallButton ? 'Bet' : 'Bet too big') : (smallButton ? 'Bet' : 'Place bet');
                         //btnContent.push(D.span({ key: 'bc-3' }, invalidBet));
                         btnContent.push(D.span({ key: 'bc-3' }, btnText));
                         btnClasses += ' invalid-bet unselect';
 
-                    //Placing bet
-                    } else if(this.props.placingBet) {
-                        btnContent.push(D.span({ key: 'bc-4' }, smallButton? 'Bet' : 'Place bet'));
+                        //Placing bet
+                    } else if (this.props.placingBet) {
+                        btnContent.push(D.span({ key: 'bc-4' }, smallButton ? 'Bet' : 'Place bet'));
                         btnClasses += ' disable unselect';
 
-                    //Able to bet
+                        //Able to bet
                     } else {
-                        btnContent.push(D.span({ key: 'bc-5' }, smallButton? 'Bet' : 'Place bet'));
+                        btnContent.push(D.span({ key: 'bc-5' }, smallButton ? 'Bet' : 'Place bet'));
                         btnClasses += ' ';
                         onClickFun = self.props.placeBet;
                     }
@@ -137,7 +137,7 @@ define([
                     console.error('Not defined state in controls');
                 }
 
-            //The user is playing
+                //The user is playing
             } else {
                 btnContent.push(
                     D.div({ className: 'btn-content', key: 'bc-6' },
@@ -145,7 +145,7 @@ define([
                         D.span({ className: 'cashout-amount-cont' },
                             D.span(null, '@ '),
                             Payout({ engine: this.props.engine }),
-                            D.span(null, 'bits')
+                            D.span(null, 'SHIDOs')
                         )
                     )
                 );
@@ -154,7 +154,7 @@ define([
                 if (this.props.cashingOut) {
                     btnClasses += ' disable';
 
-                //Able to cash out
+                    //Able to cash out
                 } else {
                     btnClasses += ' cashout';
                     onMouseDownFun = this._cashOut;

@@ -13,6 +13,8 @@ CREATE TABLE users (
     username text NOT NULL,
     email text,
     password text NOT NULL,
+    wallet_address text NOT NULL,
+    wallet_pk text NOT NULL,
     mfa_secret text,
     balance_satoshis bigint DEFAULT 0 NOT NULL,
     gross_profit bigint DEFAULT 0 NOT NULL,

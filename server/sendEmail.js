@@ -1,6 +1,6 @@
 var assert = require('assert');
 var nodemailer = require('nodemailer');
-var sesTransport = require('nodemailer-ses-transport');
+//var sesTransport = require('nodemailer-ses-transport');
 var config = require('../config/config');
 
 var SITE_URL = config.SITE_URL;
@@ -9,6 +9,7 @@ var SITE_URL = config.SITE_URL;
 function send(details, callback) {
     assert(details, callback);
 
+    /*
     var transport = nodemailer.createTransport(sesTransport({
         AWSAccessKeyID: config.AWS_SES_KEY,
         AWSSecretKey: config.AWS_SES_SECRET,
@@ -20,6 +21,7 @@ function send(details, callback) {
 
         callback(null);
     });
+    */
 }
 
 exports.contact = function(from, content, user, callback) {

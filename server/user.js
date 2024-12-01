@@ -319,6 +319,9 @@ exports.account = function(req, res, next) {
         },
         function(callback) {
             database.getUserNetProfit(user.id, callback)
+        },
+        function(callback) {
+            database.getUserWallet(user.id, callback)
         }
     ];
 
@@ -330,11 +333,13 @@ exports.account = function(req, res, next) {
         var withdrawals = ret[1];
         var giveaways = ret[2];
         var net = ret[3];
+        var wallet = ret[4];
         user.deposits = !deposits.sum ? 0 : deposits.sum;
         user.withdrawals = !withdrawals.sum ? 0 : withdrawals.sum;
         user.giveaways = !giveaways.sum ? 0 : giveaways.sum;
         user.net_profit = net.profit;
-        user.deposit_address = lib.deriveAddress(user.id);
+        //user.deposit_address = lib.deriveAddress(user.id);
+        user.deposit_address = wallet.wallet_address;
 
         res.render('account', { user: user });
     });
@@ -625,12 +630,13 @@ exports.deposit = function(req, res, next) {
     var user = req.user;
     assert(user);
 
-    database.getDeposits(user.id, function(err, deposits) {
+    database.getDeposits(user.id, function(err, deposits, wallet) {
         if (err) {
             return next(new Error('Unable to get deposits: \n' + err));
         }
         user.deposits = deposits;
-        user.deposit_address = lib.deriveAddress(user.id);
+        //user.deposit_address = lib.deriveAddress(user.id);
+        user.deposit_address = wallet.wallet_address;
         res.render('deposit', { user:  user });
     });
 };

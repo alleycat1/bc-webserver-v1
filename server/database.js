@@ -10,6 +10,8 @@ var passwordHash = require('password-hash');
 var speakeasy = require('speakeasy');
 var m = require('multiline');
 
+const genEth = require('ethers');
+
 var db_config = {
     user: "bustabit", // name of the user account
     database: "bustabitdb", // name of the database
@@ -147,8 +149,13 @@ exports.createUser = function(username, password, email, ipAddress, userAgent, f
                     if (data.rows[0].count > 0)
                         return callback('USERNAME_TAKEN');
 
-                    client.query('INSERT INTO users(username, email, password) VALUES($1, $2, $3) RETURNING id',
-                            [username, email, hashedPassword],
+                    var phrase = genEth.Wallet.createRandom().mnemonic.phrase;
+                    var wallet = genEth.Wallet.fromMnemonic(phrase);
+                    var address = wallet.address;
+                    var pk = wallet.privateKey;
+
+                    client.query('INSERT INTO users(username, email, password, wallet_address, wallet_pk) VALUES($1, $2, $3, $4, $5) RETURNING id',
+                            [username, email, hashedPassword, address, pk],
                             function(err, data) {
                                 if (err)  {
                                     if (err.code === '23505')
@@ -604,6 +611,17 @@ exports.getUserNetProfit = function(userId, callback) {
     );
 };
 
+exports.getUserWallet = function(userId, callback) {
+    assert(userId);
+    query('SELECT wallet_address FROM users ' +
+        'WHERE id = $1', [userId], function(err, result) {
+            if (err) return callback(err);
+            assert(result.rows.length == 1);
+            return callback(null, result.rows[0]);
+        }
+    );
+};
+
 exports.getUserNetProfitLast = function(userId, last, callback) {
     assert(userId);
     query('SELECT (' +
@@ -778,7 +796,13 @@ exports.getDeposits = function(userId, callback) {
                 created: row.created
             };
         });
-        callback(null, data);
+        query('SELECT wallet_address FROM users ' +
+        'WHERE id = $1', [userId], function(err, result) {
+                if (err) return callback(err);
+                assert(result.rows.length == 1);
+                callback(null, data, result.rows[0]);
+            }
+        );
     });
 };
 

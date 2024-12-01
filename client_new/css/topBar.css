@@ -3,14 +3,15 @@
     top: 0;
     right: 0;
     left: 0;
-    height: 2.2rem;
-    vertical-align: middle;
+    height: 2rem;
+    background-color: white;
     border-bottom: 1px solid #ddd;
     font-family: "Verlag A", "Verlag B", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #top-bar .title {
     float: left;
+    vertical-align: middle;
 }
 
 #top-bar .title h1 {
@@ -18,21 +19,13 @@
     line-height: 2rem;
     font-size: 1.5rem;
     font-weight: bold;
-    margin-top: 5px;
     padding-left: 1rem;
     font-family: "Courier New";
 }
 
 #top-bar .user-login {
     float: right;
-    margin-top: 2px;
-    margin-right: 5px;
-    width: auto;
-}
-
-#top-bar .user-login .login .register {
-    border: 2px solid #e58929;
-    border-radius: 5px;
+    line-height: 40px;
 }
 
 
@@ -95,6 +88,17 @@
 }
 
 
+/** User logged **/
+
+#top-bar .user-login .balance-bits {
+    display: inline-block;
+    padding-right: 0.5rem;
+}
+
+#top-bar .user-login .balance-bits span{
+    line-height: 2rem;
+    color: black;
+}
 
 #top-bar .user-login .username {
     display: inline-block;

@@ -81,10 +81,11 @@ if (!derivedPubKey)
     throw new Error('Must set env var BIP32_DERIVED_KEY');
 
 
-var hdNode = bitcoinjs.HDNode.fromBase58(derivedPubKey);
+//var hdNode = bitcoinjs.HDNode.fromBase58(derivedPubKey);
 
 exports.deriveAddress = function(index) {
-    return hdNode.derive(index).keyPair.getAddress().toString();
+    //return hdNode.derive(index).keyPair.getAddress().toString();
+    return '0';
 };
 
 exports.formatSatoshis = function(n, decimals) {

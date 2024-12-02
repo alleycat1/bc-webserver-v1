@@ -68,7 +68,7 @@ define(['lib/key-mirror'], function (KeyMirror) {
 
         Engine: {
             STOP_PREDICTING_LAPSE: 300,
-            HOST: (window.document.location.host === 'www.bustabit.com' || window.DEV_OTT) ? 'https://gs.bustabit.com:443' : window.document.location.host.replace(/:3841$/, ':3842'),
+            HOST: (window.document.location.host === 'crash.magicdex.app' || window.DEV_OTT) ? 'https://crashengine.magicdex.app:443' : window.document.location.host.replace(/:3841$/, ':3842'),
             GAME_API_VERSION: 1,
             CHAT_HOST: window.document.location.host,
             IDLE_TIMEOUT: 5 * 60 * 1000, // 5 minutes

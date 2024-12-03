@@ -25,7 +25,12 @@ $ make installcheck
 sudo -u postgres createuser -P bustabit
 sudo -u postgres createdb -O bustabit bustabitdb
 sudo -u postgres createlang plv8 bustabitdb
-psql -W -U bustabit -d bustabitdb -h localhost -f bustabit-webserver/server/sql/schema.sql
+
+su postgres
+psql -d bustabitdb
+  create extension plv8;
+
+psql -W -U bustabit -d bustabitdb -h localhost -f server/sql/schema.sql
 
 
 === Changing socket.io-client package ===
@@ -33,3 +38,6 @@ Copy all files in the dist folder to the upper folder.
 
 === Populate game hashes from game server ===
 node populate_hashes.js
+
+https://www.hostmycode.in/tutorials/configuring-nginx-for-nodejs-application
+https://medium.com/@adarsh-d/node-js-on-port-80-or-443-7083336af3b0

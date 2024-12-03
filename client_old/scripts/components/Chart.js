@@ -3,16 +3,16 @@ define([
     'lib/clib',
     'components/Graph',
     'game-logic/engine'
-], function(
+], function (
     React,
     Clib,
     Graph,
     Engine
-){
+) {
 
     var D = React.DOM;
 
-    function getState(){
+    function getState() {
         return {
             engine: Engine
         }
@@ -25,19 +25,19 @@ define([
             return getState();
         },
 
-        _onChange: function() {
+        _onChange: function () {
             //Check if its mounted because when Game view receives the disconnect event from EngineVirtualStore unmounts all views
             //and the views unregister their events before the event dispatcher dispatch them with the disconnect event
-            if(this.isMounted())
+            if (this.isMounted())
                 this.setState(getState());
         },
 
-        componentWillMount: function() {
+        componentWillMount: function () {
             var width;
 
-            window.onresize=function() {
+            window.onresize = function () {
                 if (window.innerWidth > 767) {
-                    if((window.innerWidth) < 1000) {
+                    if ((window.innerWidth) < 1000) {
                         width = Math.floor(window.innerWidth * 0.58);
                     } else {
                         width = 600;
@@ -49,7 +49,7 @@ define([
             };
 
             if (window.innerWidth > 767) {
-                if((window.innerWidth) < 1000) {
+                if ((window.innerWidth) < 1000) {
                     width = Math.floor(window.innerWidth * 0.58);
                 } else {
                     width = 600;
@@ -61,7 +61,7 @@ define([
             this.graph = new Graph(width, 300);
         },
 
-        componentWillUnmount: function() {
+        componentWillUnmount: function () {
             Engine.off({
                 game_started: this._onChange,
                 game_crash: this._onChange,
@@ -72,7 +72,7 @@ define([
             this.mounted = false;
         },
 
-        componentDidMount: function() {
+        componentDidMount: function () {
             Engine.on({
                 game_started: this._onChange,
                 game_crash: this._onChange,
@@ -84,8 +84,8 @@ define([
             this.animRequest = window.requestAnimationFrame(this._draw);
         },
 
-        _draw: function() {
-            if(this.mounted) { //TODO: If mounted could be checked with react, is there a reason to do it manually?
+        _draw: function () {
+            if (this.mounted) { //TODO: If mounted could be checked with react, is there a reason to do it manually?
                 var canvas = this.refs.canvas.getDOMNode();
                 if (!canvas.getContext) {
                     console.log('No canvas');
@@ -104,10 +104,10 @@ define([
             }
         },
 
-        render: function() {
-            return D.div({ className: 'chart', style: { position: 'relative' }},
-                D.div({ style: { position: 'absolute', bottom: '27px', right: '30px', fontSize: '55%' }},
-                    'Max profit: ', (this.state.engine.maxWin/1e8).toFixed(4), ' BTC'),
+        render: function () {
+            return D.div({ className: 'chart', style: { position: 'relative' } },
+                D.div({ style: { position: 'absolute', bottom: '27px', right: '30px', fontSize: '55%' } },
+                    'Max profit: ', (this.state.engine.maxWin / 1e8).toFixed(4), ' SHIDO'),
 
                 D.canvas({
                     width: this.graph.canvasWidth,

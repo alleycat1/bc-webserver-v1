@@ -90,7 +90,7 @@ define([
             return D.div({ id: 'top-bar' },
                 D.div({ className: 'title' },
                     D.a({ href: '/' },
-                        D.h1(null, this.props.isMobileOrSmall ? 'SHIDO' : 'SHIDO Rocket Game')
+                        D.h1(null, this.props.isMobileOrSmall ? 'Magic' : 'Magic Rocket Game')
                     ),
                     // D.a({ href: '/leaderboard' }, D.h3(null, 'Leaderboard')),
                     // D.a({ href: '/stats' }, D.h3(null, 'Stats')),

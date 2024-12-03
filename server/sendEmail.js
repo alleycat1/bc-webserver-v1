@@ -67,7 +67,7 @@ exports.passwordReset = function (to, recoveryList, callback) {
     var details = {
         to: to,
         from: 'noreply@moneypot.com',
-        subject: 'ShidoRocketGame.com - Reset Password Request',
+        subject: 'MagicRocketGame.com - Reset Password Request',
         html: html
 
     };

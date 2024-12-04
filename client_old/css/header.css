@@ -7,13 +7,14 @@
 
 .nav-top-bar {
     text-align: center;
-    border-bottom: 1px solid #ddd;
-    height: 40px;
+    background-color: rgb(0, 7, 25);
+    border-bottom: 2px solid rgba(133, 133, 133, 0.1);
+    height: 3rem;
     line-height: 40px;
 }
 
 .nav-top-bar div {
-    font-family: "Verlag A", "Verlag B", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Kanit", sans-serif;
     font-size: 20px;
     /* padding: 0; */
     /* margin: 0; */
@@ -29,17 +30,13 @@
 }
 
 .nav-top-bar .title h1 {
-    /*color: black;*/
-    /*font-size: 25px;*/
-    /*font-family: "Courier New";*/
-    /*font-weight: 700;*/
     text-decoration: none;
-    color: #e58929;
+    color: #5A00EE;
     line-height: 40px;   
     font-size: 30px;
     font-weight: bold;
     padding-left: 20px;
-    font-family: "Courier New";
+    font-family: "Kanit", sans-serif;
 }
 
 .nav-top-bar .table-title {
@@ -81,17 +78,9 @@
     font-weight: bold;
 }
 
-.nav-top-bar .username a {
-    
-}
-
 .nav-top-bar .register {
     display: inline-block;
-
-}
-
-.nav-top-bar .register a {
-
+    background-color: #000918;
 }
 
 .nav-top-bar .login {
@@ -107,7 +96,7 @@
 .nav-top-bar .new-theme a {
     border: 2px solid grey;
     padding: 2px;
-    color: #e58929;
+    color: #5A00EE;
     font-weight: bold;
     cursor: pointer;
 }

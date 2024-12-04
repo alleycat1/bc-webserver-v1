@@ -12,7 +12,7 @@
 body {
     font-family: Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
-    color: #000;
+    color: #949494;
     overflow-x: hidden;
 }
 /* Shared Stuff
@@ -64,7 +64,7 @@ table {
 }
 
 .panel {
-    background-color: #FFFFFF;
+    background-color: none;
 }
 /* Style for everything that is a button or wants to look like one */
 .border-button {
@@ -105,7 +105,8 @@ table {
 
 .input small {
     letter-spacing: 1px;
-    font-size: 11px;
+    font-size: 12px;
+    margin-top: 0.4rem;
 }
 .input {
     margin-bottom: 25px;
@@ -193,12 +194,12 @@ nav .top-bar-title {
 .faq-nav li a:not(.button){
     padding: 1px;
     margin-bottom: 5px;
-    color: #353535;
+    color: #d8d8d8;
     font-weight: 500;
 }
 
 .faq-nav li a:not(.button):hover{
-    color: #5d5d5d;
+    color: #353535;
 }
 
 /* Contact Styles

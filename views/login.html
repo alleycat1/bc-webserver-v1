@@ -13,37 +13,38 @@
     <form action="/login" method="post">
         <input id="fp" name="fp" type="hidden" value=""/>
         <div class="row">
-            <div class="large-12 columns">
-                <label>Username
-                    <input type="text" name="username" required/>
-                </label>
+            <div class="row">
+                <div class="large-12 columns">
+                    <label>Username
+                        <input type="text" name="username" required/>
+                    </label>
+                </div>
+            </div>
+             <div class="row">
+                <div class="large-12 columns input">
+                    <label>Password
+                        <input type="password" name="password" required />
+                    </label>
+                </div>
+             </div>
+            <div class="row">
+                <div class="large-12 columns input">
+                    <label>
+                        Remember me
+                        <input type="checkbox" name="remember">
+                    </label>
+                </div>
+            </div>
+             <!-- <div class="row">
+                <div class="g-recaptcha" data-sitekey="{{=it.recaptchaKey}}" data-callback="enableSubmit"></div>
+             </div> -->
+             <div class="row">
+                <div class="large-12 columns input">
+                    <a class="small" href="/forgot-password">Forgot your password?</a>
+                    <input id="loginSubmit" class="button secondary right" type="submit" value="Login"/>
+                </div>
             </div>
         </div>
-         <div class="row">
-            <div class="large-12 columns">
-                <label>Password
-                    <input type="password" name="password" required />
-                </label>
-            </div>
-         </div>
-        <div class="row">
-            <div class="large-12 columns">
-                <label>
-                    Remember me
-                    <input type="checkbox" name="remember">
-                </label>
-            </div>
-        </div>
-         <div class="row">
-            <div class="g-recaptcha" data-sitekey="{{=it.recaptchaKey}}" data-callback="enableSubmit"></div>
-         </div>
-         <div class="row">
-            <div class="large-12 columns">
-                <a class="small" href="/forgot-password">Forgot your password?</a>
-                <input id="loginSubmit" class="button secondary right" type="submit" value="Login"/>
-            </div>
-        </div>
-
     </form>
 </div>
 

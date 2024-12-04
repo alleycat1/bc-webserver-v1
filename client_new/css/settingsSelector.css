@@ -24,7 +24,7 @@
 }
 
 #settings-selector-container .tab-holder.tab-active a {
-    color: rgba(228, 121, 3, 1);
+    color: rgba(90, 0, 238);
 }
 
 #settings-selector-container .tab-holder a {
@@ -36,7 +36,7 @@
 }
 
 #settings-selector-container .tab-holder:hover a {
-    color: rgba(228, 121, 3, 1);
+    color: rgba(90, 0, 238);
 }
 
 #settings-selector-container  .settings-widget-container {

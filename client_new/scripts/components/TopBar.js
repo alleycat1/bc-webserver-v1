@@ -92,11 +92,13 @@ define([
                     D.a({ href: '/' },
                         D.h1(null, this.props.isMobileOrSmall ? 'Magic' : 'Magic Rocket Game')
                     ),
-                    // D.a({ href: '/leaderboard' }, D.h3(null, 'Leaderboard')),
-                    // D.a({ href: '/stats' }, D.h3(null, 'Stats')),
-                    // D.a({ href: '/faq' }, D.h3(null, 'Help'))
                 ),
-                userLogin,
+                D.div({ className: 'features' },
+                    D.a({ href: '/leaderboard' }, D.h3(null, 'Leaderboard')),
+                    D.a({ href: '/stats' }, D.h3(null, 'Stats')),
+                    D.a({ href: '/faq' }, D.h3(null, 'Help')),
+                    userLogin,
+                ),
             )
         }
     });

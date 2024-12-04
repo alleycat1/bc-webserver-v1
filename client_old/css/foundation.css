@@ -39,7 +39,7 @@ body {
   font-size: 100%; }
 
 body {
-  background: white;
+  background: #000918;
   color: #222222;
   padding: 0;
   margin: 0;
@@ -1071,26 +1071,26 @@ select {
     right: 91.66667%;
     left: auto; } }
 button, .button {
-  border-style: solid;
-  border-width: 0px;
+  -webkit-box-align: center;
+  align-items: center;
+  border: 0px;
+  border-radius: 16px;
+  box-shadow: rgba(14, 14, 44, 0.4) 0px -1px 0px 0px inset;
   cursor: pointer;
-  font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
-  font-weight: normal;
-  line-height: normal;
-  margin: 0 0 1.25rem;
-  position: relative;
-  text-decoration: none;
-  text-align: center;
-  -webkit-appearance: none;
-  -webkit-border-radius: 0;
-  display: inline-block;
-  padding-top: 1rem;
-  padding-right: 2rem;
-  padding-bottom: 1.0625rem;
-  padding-left: 2rem;
-  font-size: 1rem;
-  background-color: #008cba;
-  border-color: #007095;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  -webkit-box-pack: center;
+  justify-content: center;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  opacity: 1;
+  outline: 0px;
+  transition: background-color 0.2s, opacity 0.2s;
+  height: 32px;
+  padding: 0px 16px;
+  background: rgb(90, 0, 238);
   color: white;
   transition: background-color 300ms ease-out; }
   button:hover, button:focus, .button:hover, .button:focus {
@@ -4299,7 +4299,7 @@ table {
 
 /* Standard Forms */
 form {
-  margin: 0 0 1rem; }
+  margin: 2rem 0 1rem; }
 
 /* Using forms within rows, we need to set some defaults */
 form .row .row {

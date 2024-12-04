@@ -127,7 +127,7 @@ define([
                         break;
                     case 'newUser':
                         messageContent = D.span(null,
-                            D.a({ href: "/request" }, "Welcome to bcgame.com, to start you can request 2 free SHIDOs or you  just watch the current games... have fun :D")
+                            D.a({ href: "/request" }, "Welcome to MagicRocketGame.com, to start you can request 2 free SHIDOs or you  just watch the current games... have fun :D")
                         );
                         messageClass = 'new-user';
                         break;

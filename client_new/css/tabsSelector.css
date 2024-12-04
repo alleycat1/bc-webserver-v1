@@ -184,12 +184,12 @@
 }
 
 #tabs-inner-container .tab-container li.tab.tab-active a {
-    color: rgba(228, 121, 3, 1);
+    color: rgba(90, 0, 238);
     font-weight: 800;
 }
 
 #tabs-inner-container .tab-container li.tab:hover a {
-    color: rgba(228, 121, 3, 1);
+    color: rgba(90, 0, 238);
 }
 
 
@@ -232,6 +232,6 @@
     top: 0;
     right: 0;
     left: 1.5rem;
-    bottom: 0;
+    bottom: 2px;
     border-radius: 10px;
 }

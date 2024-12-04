@@ -9,7 +9,7 @@
 }
 
 .bet-bar-starting {
-    background-color: #ff8100;
+    background-color: #5A00EE;
 }
 
 .bet-bar-container {
@@ -22,7 +22,7 @@
 
 /* Colors for the players playing and lost */
 .bet-bar-playing {
-    background-color: #ff8100;
+    background-color: #5A00EE;
 }
 
 .bet-bar-lost {

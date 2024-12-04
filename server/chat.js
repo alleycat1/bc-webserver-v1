@@ -11,7 +11,7 @@ var ips = require('./ips');
 
 /** How to use the chat on the client?
  *
- * 1.- Connect with socket.io to bcgame.com
+ * 1.- Connect with socket.io to MagicRocketGame.com
  *      The id(session) cookie on the socket.io handshake is used for authentication
  * 2.- On connect emit a join event with the channel name you want to join
  * 3.- Listen for the 'say' and other stuff

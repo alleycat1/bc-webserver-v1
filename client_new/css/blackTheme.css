@@ -3,14 +3,14 @@ html, body {
 
 body {
     color: white;
-    background: #181a1e;
+    background: #000918;
 }
 
 ::-webkit-scrollbar-corner {
     background-color: #1c1c1f;
 }
 ::-webkit-scrollbar-track {
-    background-color: #181a1e;
+    background-color: #000918;
 }
 ::-webkit-scrollbar-thumb {
     border: 1px solid #1c1c1f;
@@ -47,8 +47,8 @@ body {
    ========================================================================== */
 
 #top-bar {
-    background-color: #292d35;
-    border-bottom: none;
+    background-color: rgb(0, 7, 25);
+    border-bottom: 2px solid rgba(133, 133, 133, 0.1);
 }
 
 #top-bar .user-login .balance-bits span {
@@ -61,7 +61,7 @@ body {
    ========================================================================== */
 
 #game-right-container {
-    border: 2px solid #b0b3c1;
+    border: 2px solid rgba(133, 133, 133, 0.1);
     border-radius: 10px;
 }
 
@@ -71,7 +71,7 @@ body {
    ========================================================================== */
 
 #controls-selector-container .button-holder {
-    background-color: #292d35;
+    background-color: #000719;
     border-radius: 10px;
 }
 
@@ -81,12 +81,12 @@ body {
 }
 
 #controls-selector-container .controls-widget-container{
-    background-color: #181a1e;
+    background-color: #000918;
     border-radius: 10px;
 }
 
 #controls-selector-container .button-holder.tab-active {
-    background-color: #181a1e;
+    background-color: #000918;
     border-radius: 10px;
 }
 
@@ -96,7 +96,7 @@ body {
    ========================================================================== */
 
 #controls-container {
-    border-color: #292d35;
+    border-color: #000719;
 }
 
 
@@ -134,7 +134,7 @@ body {
 }
 
 #chat-channel-selector .flags-container {
-    background-color: #181a1e;
+    background-color: #000918;
 }
 
 
@@ -143,12 +143,13 @@ body {
    ========================================================================== */
 
 #tabs-inner-container .widget-container {
-    background-color: #181a1e;
+    background-color: #000918;
     border-radius: 10px;
+    padding-bottom:2px
 }
 
 #tabs-inner-container, #tabs-inner-container .log-chat-container {
-    border: 2px solid #b0b3c1;
+    border: 2px solid rgba(133, 133, 133, 0.1);
     border-radius: 10px;
 }
 
@@ -157,13 +158,13 @@ body {
 }
 
 #tabs-inner-container .tab-container li.tab.tab-active {
-    background-color: #181a1e;
+    background-color: #000918;
     border-radius: 10px;
 }
 
 #tabs-inner-container .tab-container li.tab {
     border-radius: 10px;
-    background-color: #292d35;
+    background-color: #000719;
 }
 
 #tabs-inner-container .tab-container li.tab a {
@@ -173,11 +174,11 @@ body {
 
 #tabs-inner-container .tab-container .tab-settings {
     border-radius: 10px;
-    background-color: #292d35;
+    background-color: #000719;
 }
 
 #tabs-inner-container .tab-container .tab-settings.tab-active {
-    background-color: #181a1e;
+    background-color: #000918;
     border-radius: 10px;
 }
 
@@ -187,11 +188,11 @@ body {
    ========================================================================== */
 
 #settings-selector-container .tab-holder {
-    background-color: #292d35;
+    background-color: #000719;
 }
 
 #settings-selector-container .tab-holder.tab-active {
-    background-color: #181a1e;
+    background-color: #000918;
 }
 
 #settings-selector-container .tab-holder a {
@@ -217,8 +218,8 @@ body {
 }
 
 #display-settings-container select {
-    background-color: #292d35;
-    border-color: #292d35;
+    background-color: #000719;
+    border-color: #000719;
     color: white;
 }
 
@@ -231,8 +232,8 @@ body {
 }
 
 #chat-settings-container select {
-    background-color: #292d35;
-    border-color: #292d35;
+    background-color: #000719;
+    border-color: #000719;
     color: white;
 }
 
@@ -246,13 +247,13 @@ body {
 }
 
 #strategy-container .strategy-start, #strategy-container .strategy-stop, #strategy-container .strategy-select {
-    background-color: #292d35;
-    border-color: #292d35;
+    background-color: #000719;
+    border-color: #000719;
     color: white;
 }
 
 #strategy-container .strategy-start:disabled, #strategy-container .strategy-stop:disabled, #strategy-container .strategy-select:disabled {
-    color: #181a1e;
+    color: #000918;
 }
 
 #strategy-container .auto-bet-container input[type="text"] {
@@ -278,7 +279,7 @@ body {
    ========================================================================== */
 
 #players-container .header-bg {
-    background-color: #292d35;
+    background-color: #000719;
     border-radius: 10px 10px 0 0;
 }
 

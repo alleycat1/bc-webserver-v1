@@ -9,7 +9,8 @@
     text-align: center;
     background-color: rgb(0, 7, 25);
     border-bottom: 2px solid rgba(133, 133, 133, 0.1);
-    height: 3rem;
+    height: 4rem;
+    padding-top: 0.5rem;
     line-height: 40px;
 }
 
@@ -31,7 +32,7 @@
 
 .nav-top-bar .title h1 {
     text-decoration: none;
-    color: #5A00EE;
+    color: #FEFAA0;
     line-height: 40px;   
     font-size: 30px;
     font-weight: bold;

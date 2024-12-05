@@ -30,7 +30,7 @@ a:hover {
     -o-transition: all 0.1s linear;
     -ms-transition: all 0.1s linear;
     transition: all 0.1s linear;
-    color: rgb(0, 16, 197);
+    color: #FFF;
 }
 
 b {

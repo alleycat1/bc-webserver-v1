@@ -1950,7 +1950,9 @@ meta.foundation-mq-topbar {
     .panel.callout a:not(.button) {
       color: #008cba; }
   .panel.radius {
-    border-radius: 3px; }
+    border: 2px solid rgba(133, 133, 133, 0.1);
+    border-radius: 10px;
+    margin-top: 2rem; }
 
 .dropdown.button, button.dropdown {
   position: relative;
